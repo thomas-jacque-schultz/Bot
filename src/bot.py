@@ -13,7 +13,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 STATUS_CHANNEL_ID = 1071740424831647837  # Remplacez par l'ID du canal
 status_message = None  # Message updated
 
-@bot.event
+@client.event
 async def on_ready():
     print(f"{bot.user.name} est connecté !")
     update_status.start()  # Demarrer le cron
