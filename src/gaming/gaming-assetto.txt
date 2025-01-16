@@ -1,0 +1,8 @@
+Serveur Information : [gaming-assetto]
+**Nom du jeu :** [Assetto Corsa] 
+**Lien de connexion :** [assetto.schultz-thomas.fr] 
+**Nombre de joueurs Max:** [12] 
+**Mods utilisés :** [Download Modpack From Drive] 
+**Version du jeu :** [1.16] 
+**Règles du serveur :** [Course à paramétré sur l'interface Web] 
+**nom du demandeur/contact :** [Chacha | Pisel]
