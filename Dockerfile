@@ -1,14 +1,14 @@
-# Étape 1 : Utiliser une image Python légère
+# ï¿½tape 1 : Utiliser une image Python lï¿½gï¿½re
 FROM python:3.9-slim
 
-# Étape 2 : Définir le répertoire de travail dans le conteneur
+# ï¿½tape 2 : Dï¿½finir le rï¿½pertoire de travail dans le conteneur
 WORKDIR /app
 
-# Étape 3 : Copier les fichiers du projet dans le conteneur
+# ï¿½tape 3 : Copier les fichiers du projet dans le conteneur
 COPY src/ ./src/
 
-# Étape 4 : Installer les dépendances Python
-RUN pip install --no-cache-dir -r requirements.txt
+# ï¿½tape 4 : Installer les dï¿½pendances Python
+RUN pip install --no-cache-dir -r ./src/requirements.txt
 
-# Étape 5 : Définir la commande pour lancer le bot
+# ï¿½tape 5 : Dï¿½finir la commande pour lancer le bot
 CMD ["python", "src/bot.py"]
