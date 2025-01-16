@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 import os
 import discord
 from discord.ext import commands, tasks
@@ -8,7 +10,7 @@ intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Variables globales
-STATUS_CHANNEL_ID = 1234567890  # Remplacez par l'ID du canal
+STATUS_CHANNEL_ID = 1071740424831647837  # Remplacez par l'ID du canal
 status_message = None  # Message updated
 
 @bot.event
