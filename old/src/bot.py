@@ -33,7 +33,8 @@ async def init_state():
         channels = guild.channels
         for channel in channels:
             if(channel.name.__contains__("technique") | channel.name.__contains__("bot")):
-                technical_channels[channel] = await get_servers_state_list()
+                technical_channels[channel] = await get_servers_state_list() 
+    
 
     for technical_channel, serveur_states in technical_channels.items() :
         async for message in channel.history(limit=10):
