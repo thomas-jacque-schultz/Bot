@@ -1,4 +1,4 @@
-package schultz.thomas.discord.bot.enums;
+package schultz.thomas.discord.bot.model.enums;
 
 public enum MessageTypeEnum {
     

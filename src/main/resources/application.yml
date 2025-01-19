@@ -1,7 +1,6 @@
-
 spring:
   application:
     name: mongodb
   data:
     mongodb:
-      uri: mongodb://mongo:27017/mongocrud
+      uri: mongodb://localhost:27017/test
