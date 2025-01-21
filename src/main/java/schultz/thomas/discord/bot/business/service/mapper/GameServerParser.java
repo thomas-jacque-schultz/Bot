@@ -1,15 +1,14 @@
-package schultz.thomas.discord.bot.business.service.tools;
+package schultz.thomas.discord.bot.business.service.mapper;
 
 import schultz.thomas.discord.bot.model.entity.ServerEntity;
 
-import java.io.Console;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GameServerParser {
 
-    private static final Pattern regex = Pattern.compile("#(.*?)# \\[(.*?)\\]"); // Compilé une seule fois
+    private static final Pattern regex =Pattern.compile("#(.*?)#\\s*.*?\\[(.*?)\\]"); // Compilé une seule fois
 
     public static ServerEntity parseServer(String message) {
         ServerEntity serverEntity = new ServerEntity();

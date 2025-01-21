@@ -1,4 +1,4 @@
-package schultz.thomas.discord.bot.business.service.tools;
+package schultz.thomas.discord.bot.business.service.mapper;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -38,16 +38,16 @@ public class MessageWriter {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
         // Définir le titre comme le nom du serveur
-        embedBuilder.setTitle(serverEntity.getName());
+        embedBuilder.setTitle(serverEntity.getName() + "[" + serverEntity.getIdentifier() + "]");
         embedBuilder.setColor(Color.CYAN);
 
         // Ajouter les champs principaux
-        embedBuilder.addField("Connexion String", serverEntity.getConnexionString(), false);
-        embedBuilder.addField("Players Max", String.valueOf(serverEntity.getPlayersMax()), true);
+        embedBuilder.addField("URL :", serverEntity.getConnexionString(), false);
+        embedBuilder.addField("Nombre de joueurs max", String.valueOf(serverEntity.getPlayersMax()), true);
         embedBuilder.addField("Version", serverEntity.getVersion(), true);
 
         if (serverEntity.getInstallationDetails() != null && !serverEntity.getInstallationDetails().isEmpty()) {
-            embedBuilder.addField("Installation Details", serverEntity.getInstallationDetails(), false);
+            embedBuilder.addField("Installation :", serverEntity.getInstallationDetails(), false);
         }
 
         // Ajouter une description si elle existe
@@ -58,11 +58,11 @@ public class MessageWriter {
         // Ajouter les auteurs autorisés si la liste n'est pas vide
         if (serverEntity.getAllowedAuthors() != null && !serverEntity.getAllowedAuthors().isEmpty()) {
             String authors = serverEntity.getAllowedAuthors().stream().collect(Collectors.joining(", "));
-            embedBuilder.addField("Allowed Authors", authors, false);
+            embedBuilder.addField("Admin", authors, false);
         }
 
         // Ajouter un pied de page avec l'ID du serveur
-        embedBuilder.setFooter("Server ID: " + serverEntity.getId(), null);
+        embedBuilder.setFooter("Statut : online", null);
 
         // Retourner l'embed
         return embedBuilder.build();
