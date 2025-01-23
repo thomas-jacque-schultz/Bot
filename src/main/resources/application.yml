@@ -5,3 +5,4 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/test
 discord:
+  token: ${DISCORD_TOKEN:default-value}
