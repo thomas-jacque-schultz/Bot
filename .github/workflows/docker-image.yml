@@ -41,12 +41,12 @@ jobs:
     # Step 5: Build the Docker image with the version tag
     - name: Build Docker image
       run: |
-        IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/discord-bot
+        IMAGE_NAME=thomasschultzschub/discord-bot
         docker build -t $IMAGE_NAME:${{ steps.get-version.outputs.VERSION }} -t $IMAGE_NAME:latest .
 
     # Step 6: Push the Docker image with the version tag
     - name: Push Docker image
       run: |
-        IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/discord-bot
+        IMAGE_NAME=thomasschultzschub/discord-bot
         docker push $IMAGE_NAME:${{ steps.get-version.outputs.VERSION }}
         docker push $IMAGE_NAME:latest
