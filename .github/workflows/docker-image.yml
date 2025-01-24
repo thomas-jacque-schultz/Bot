@@ -28,7 +28,7 @@ jobs:
     - name: Get project version
       id: get-version
       run: |
-        version=$(mvn -f ./pom.xml org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version -q -DforceStdout)
+        version=$(mvn -f ./pom.xml org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)
         echo "version=$version"
         echo "VERSION=$version" >> $GITHUB_ENV
 
