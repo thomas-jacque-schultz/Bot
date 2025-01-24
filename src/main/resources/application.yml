@@ -3,6 +3,6 @@ spring:
     name: mongodb
   data:
     mongodb:
-      uri: mongodb://localhost:27017/test
+      uri: mongodb://${MONGODB_PATH:default-value}/test
 discord:
   token: ${DISCORD_TOKEN:default-value}
