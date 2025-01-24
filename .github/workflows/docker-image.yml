@@ -43,5 +43,5 @@ jobs:
     - name: Push Docker image
       run: |
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/discord-bot
-        docker push $IMAGE_NAME:${{ version }}
+        docker push $IMAGE_NAME:${{ steps.pom-version.outputs.version }}
         docker push $IMAGE_NAME:latest
