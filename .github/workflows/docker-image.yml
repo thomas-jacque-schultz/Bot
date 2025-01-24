@@ -44,7 +44,6 @@ jobs:
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/discord-bot
         docker build -t $IMAGE_NAME:${{ env.VERSION }} -t $IMAGE_NAME:latest .
 
-    # Step 6: Push the Docker image with the version tag
     - name: Push Docker image
       run: |
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/discord-bot
