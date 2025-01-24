@@ -30,6 +30,9 @@ jobs:
       run: |
         version=$(mvn -f ./pom.xml org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version -q -DforceStdout)
         echo "VERSION=$version" >> $GITHUB_ENV
+
+    - name: Debug version
+      run: echo "VERSION=${{ env.VERSION }}"
   
     # Step 4: Log in to Docker Hub
     - name: Log in to Docker Registry
