@@ -37,7 +37,7 @@ jobs:
     - name: Build Docker image
       run: |
         IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/discord-bot
-        docker build -t $IMAGE_NAME:${{ version }} -t $IMAGE_NAME:latest .
+        docker build -t $IMAGE_NAME:${{ steps.pom-version.outputs.version }} -t $IMAGE_NAME:latest .
 
     # Step 6: Push the Docker image with the version tag
     - name: Push Docker image
