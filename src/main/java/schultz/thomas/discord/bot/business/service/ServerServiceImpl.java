@@ -46,11 +46,12 @@ public class ServerServiceImpl implements ServerService {
     public void refreshServers(GenericEvent genericEvent) {
         List<ServerEntity> toUpdate = new ArrayList<>();
 
-        serveurStateCache.forEach( server -> {                      // trouver les serveurs qui ont changé de status
-            if(dockerService.serverStatusChanged(server)) {
-                toUpdate.add(server);
-            }
-        });
+        serveurStateCache.stream()
+                .filter(dockerService::serverStatusChanged)
+                .forEach(toUpdate::add);
+
+
+
 
         toUpdate.forEach(server -> {                            // mettre à jour les messages
             server.getAllServersMessages().forEach(messageLocation -> {
@@ -95,7 +96,12 @@ public class ServerServiceImpl implements ServerService {
     @Override
     public void addNewGamingServer(MessageReceivedEvent event) {
         ServerEntity server =  GameServerParser.parseServer(event.getMessage().getContentRaw());
-        ServerEntity candidate = serveurStateCache.stream().filter(serverEntity -> serverEntity.getIdentifier().equals(server.getIdentifier())).findFirst().orElse(null);
+        ServerEntity candidate = serveurStateCache.stream()
+                .filter(serverEntity -> serverEntity
+                        .getIdentifier()
+                        .equals(server.getIdentifier()))
+                .findFirst()
+                .orElse(null);
         //si le serveur est déjà dans la liste
         if(candidate != null) {
             serveurEntityMapper.updateServeurEntityFromSource(server, candidate);
@@ -105,5 +111,26 @@ public class ServerServiceImpl implements ServerService {
         }
         syncExistingChannels(event);
     }
+
+    ////
+
+
+    /*
+
+    public void refreshServerMessages(Serveur gs){
+    }
+
+    public void  refresh
+
+
+
+
+    package domain
+    DiscordServer { type : GAMING | CHAT  } -> Server  Discord
+    GamingServer { refresh()}
+    Channel
+
+     */
+
 
 }

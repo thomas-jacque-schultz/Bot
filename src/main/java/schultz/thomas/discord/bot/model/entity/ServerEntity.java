@@ -1,8 +1,6 @@
 package schultz.thomas.discord.bot.model.entity;
 
 
-import kotlin.Pair;
-import kotlin.Triple;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,11 +13,11 @@ import java.util.List;
 public  class ServerEntity {
 
    @Id
-   private String id;
-   private String identifier;
+   private String id;            // auto generated uuid
+   private String identifier;    // foreign key to other software
    private String name;
    private String connexionString;
-   private int PlayersMax;
+   private int playersMax;
    private String InstallationDetails;
    private String version;
    private String description;

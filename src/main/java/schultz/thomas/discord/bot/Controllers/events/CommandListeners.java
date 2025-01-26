@@ -5,36 +5,23 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.stereotype.Component;
-import schultz.thomas.discord.bot.business.service.ServerService;
+import schultz.thomas.discord.bot.business.service.CommandExecutorService;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class CommandListeners extends ListenerAdapter  {
 
-    private final ServerService serverService;
+
+    private final CommandExecutorService commandExecutorService;
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
+    public void onMessageReceived(MessageReceivedEvent event) throws RuntimeException {
+        if (filterMessage(event)) return;
+        commandExecutorService.handleCommand(event);
+    }
 
-
-        if (event.getAuthor().isBot()) {
-            return;
-        }
-
-        if(event.getMessage().getContentRaw().startsWith("/addServer")) {
-            log.info("Command received: " + event.getMessage().getContentDisplay() + " from " + event.getClass().getName());
-            serverService.addNewGamingServer(event);
-        }
-
-        if(event.getMessage().getContentRaw().startsWith("/syncChannels")) {
-            log.info("Command received: " + event.getMessage().getContentDisplay() + " from " + event.getClass().getName());
-            serverService.syncExistingChannels(event);
-        }
-
-        log.info("Message received: " + event.getMessage().getContentDisplay() + " from " + event.getClass().getName());
-        //serverService.answerHello(jdaProvider.getJda(), event);
-
-        String message = event.getMessage().getContentRaw();
+    public boolean filterMessage(MessageReceivedEvent event){
+        return event.getAuthor().isBot() || !event.getMessage().getContentRaw().startsWith("/");
     }
 }
