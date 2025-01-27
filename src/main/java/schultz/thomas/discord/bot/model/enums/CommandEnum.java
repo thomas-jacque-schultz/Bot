@@ -14,7 +14,9 @@ public enum CommandEnum {
 
     START_SGAMING(""),                              // start sGaming server
     STOP_SGAMING(""),                               // stop sGaming server
-    CREATE_USER("createUser");
+
+    CREATE_USER("createUser"),
+    UPDATE_USER("updateUser");
 
     private final String commandName;
 

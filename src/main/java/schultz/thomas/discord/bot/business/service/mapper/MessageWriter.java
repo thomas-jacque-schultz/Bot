@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.springframework.stereotype.Component;
-import schultz.thomas.discord.bot.model.entity.ServerEntity;
+import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
 import java.awt.*;
 import java.util.stream.Collectors;
@@ -15,49 +15,52 @@ import java.util.stream.Collectors;
 public class MessageWriter {
 
 
-    /*
+    /**
         * Sends a message to the channel with the Game server name
         * Only if the server is not already in the channel
+     * @param channel  the channel to send the message
+     * @param gamingServerEntity  the server to send
+     * @return the message ID
      */
-    public String sendMessage(TextChannel channel, ServerEntity serverEntity) {
-        return channel.sendMessageEmbeds(createEmbedFromServer(serverEntity)).complete().getId();
+    public String sendMessage(TextChannel channel, GamingServerEntity gamingServerEntity) {
+        return channel.sendMessageEmbeds(createEmbedFromServer(gamingServerEntity)).complete().getId();
     }
 
     /*
         * Updates the message in the channel with the Game server name
      */
-    public String updateMessage(ServerEntity serverEntity, Message message) {
-        return message.editMessageEmbeds(createEmbedFromServer(serverEntity)).complete().getId();
+    public String updateMessage(GamingServerEntity gamingServerEntity, Message message) {
+        return message.editMessageEmbeds(createEmbedFromServer(gamingServerEntity)).complete().getId();
     }
 
     /*
         * With all fields of the serverEntity, we can create a message a embeded message
      */
-    public MessageEmbed createEmbedFromServer(ServerEntity serverEntity) {
+    public MessageEmbed createEmbedFromServer(GamingServerEntity gamingServerEntity) {
         // Création d'un EmbedBuilder
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
         // Définir le titre comme le nom du serveur
-        embedBuilder.setTitle(serverEntity.getName() + "[" + serverEntity.getIdentifier() + "]");
+        embedBuilder.setTitle(gamingServerEntity.getName() + "[" + gamingServerEntity.getIdentifier() + "]");
         embedBuilder.setColor(Color.CYAN);
 
         // Ajouter les champs principaux
-        embedBuilder.addField("URL :", serverEntity.getConnexionString(), false);
-        embedBuilder.addField("Nombre de joueurs max", String.valueOf(serverEntity.getPlayersMax()), true);
-        embedBuilder.addField("Version", serverEntity.getVersion(), true);
+        embedBuilder.addField("URL :", gamingServerEntity.getConnexionString(), false);
+        embedBuilder.addField("Nombre de joueurs max", String.valueOf(gamingServerEntity.getPlayersMax()), true);
+        embedBuilder.addField("Version", gamingServerEntity.getVersion(), true);
 
-        if (serverEntity.getInstallationDetails() != null && !serverEntity.getInstallationDetails().isEmpty()) {
-            embedBuilder.addField("Installation :", serverEntity.getInstallationDetails(), false);
+        if (gamingServerEntity.getInstallationDetails() != null && !gamingServerEntity.getInstallationDetails().isEmpty()) {
+            embedBuilder.addField("Installation :", gamingServerEntity.getInstallationDetails(), false);
         }
 
         // Ajouter une description si elle existe
-        if (serverEntity.getDescription() != null && !serverEntity.getDescription().isEmpty()) {
-            embedBuilder.setDescription(serverEntity.getDescription());
+        if (gamingServerEntity.getDescription() != null && !gamingServerEntity.getDescription().isEmpty()) {
+            embedBuilder.setDescription(gamingServerEntity.getDescription());
         }
 
         // Ajouter les auteurs autorisés si la liste n'est pas vide
-        if (serverEntity.getAllowedAuthors() != null && !serverEntity.getAllowedAuthors().isEmpty()) {
-            String authors = serverEntity.getAllowedAuthors().stream().collect(Collectors.joining(", "));
+        if (gamingServerEntity.getAdmins() != null && !gamingServerEntity.getAdmins().isEmpty()) {
+            String authors = gamingServerEntity.getAdmins().stream().collect(Collectors.joining(", "));
             embedBuilder.addField("Admin", authors, false);
         }
 

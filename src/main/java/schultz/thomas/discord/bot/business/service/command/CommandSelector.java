@@ -22,7 +22,7 @@ public class CommandSelector {
     public Command getCommand(String commandName /* message ?*/) {
         CommandEnum com = CommandEnum.valueOf(commandName);
         if(commands.containsKey(com)) {
-            commands.get(com);
+            return commands.get(com);
         }
         // Renvoyer command inconnue au bataillon
         return null;

@@ -3,9 +3,7 @@ package schultz.thomas.discord.bot.business.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import schultz.thomas.discord.bot.business.service.command.Command;
 import schultz.thomas.discord.bot.business.service.mapper.UserEntityMapper;
-import schultz.thomas.discord.bot.model.entity.ServerEntity;
 import schultz.thomas.discord.bot.model.entity.UserEntity;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 import schultz.thomas.discord.bot.model.repository.UserRepository;
@@ -30,21 +28,19 @@ public class UserServiceImpl implements UserService {
 
 
     public void createUser(UserEntity ue) {
-        if(userStateCache.stream().anyMatch(user -> user.getId().equals(ue.getId()))) {
+        if(userStateCache.stream().anyMatch(user -> user.getDiscordId().equals(ue.getDiscordId()))) {
             throw new IllegalArgumentException("User already exists");
         }
-        userRepository.save(ue);
-        userStateCache.add(ue);
+        userStateCache.add(userRepository.save(ue));
     }
 
-    public void updateUser(UserEntity ue) {
-        Optional<UserEntity> toUpdate  =  userStateCache.stream().filter(u -> u.getId().equals(ue.getId())).findFirst();
-        if(!toUpdate.isPresent()){
+    public void updateUser(UserEntity userEntity) {
+        UserEntity candidate  =  userStateCache.stream().filter(u -> u.getDiscordId().equals(userEntity.getDiscordId())).findFirst().orElse(null);
+        if(candidate == null) {
             throw new IllegalArgumentException("User does not exist");
         }
-        userEntityMapper.updateServeurEntityFromSource(ue, toUpdate.get());
-        userRepository.save(toUpdate.get());
-        //
+        userEntityMapper.updateUserEntityFromSource(candidate, userEntity);
+        userRepository.save(candidate);
     }
 
     public UserPrivilegeEnum getRole(String discordId){
