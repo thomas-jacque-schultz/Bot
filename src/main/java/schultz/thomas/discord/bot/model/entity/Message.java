@@ -1,15 +1,13 @@
 package schultz.thomas.discord.bot.model.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-@Getter
-@Setter
-public class MessageLocation {
+import lombok.Data;
+
+@Data
+public class Message {
 
     public String guildId;
     public String channelId;
     public String messageId;
-
-
+    public String messageContent;
 
 }

@@ -28,15 +28,15 @@ public class CommandExecutorService {
         Command command = commandSelector.getCommand((commandName));
 
         if (command == null) {
-            throw new IllegalArgumentException("Vous êtes un génie, vraiment personne n'avait pensé à cette commande avant vous : " + commandName);
+            throw new IllegalArgumentException("you thought outside of the box, but there is no : " + commandName);
         }
 
         if (!command.hasRight(userService.getRole(discordContext.getAuthor().getId()))) {
-            throw new IllegalArgumentException("Un manant à tenté un commande impie : " + commandName);
+            throw new IllegalArgumentException("The emperor of Holy Terra didn't allow you to : " + commandName);
         }
 
         if (!command.isValid(context)) {
-            throw new IllegalArgumentException("Donnez à cette homme un dictionnaire il a tenté d'écrire : " + commandName);
+            throw new IllegalArgumentException("RTFM : " + commandName);
         }
 
         command.execute(context);

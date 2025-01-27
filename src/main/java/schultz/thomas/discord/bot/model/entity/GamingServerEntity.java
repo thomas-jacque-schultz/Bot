@@ -10,22 +10,23 @@ import java.util.List;
 
 @Data
 @Document( collection = "servers" )
-public  class ServerEntity {
+public  class GamingServerEntity {
 
    @Id
    private String id;            // auto generated uuid
    private String identifier;    // foreign key to other software
    private String name;
    private String connexionString;
-   private int playersMax;
-   private String InstallationDetails;
+   private Integer playersMax;
+   private String installationDetails;
    private String version;
    private String description;
-   private List<String> allowedAuthors = new ArrayList<>(); // evol to list of userEntity
-   private List<MessageLocation> allServersMessages= new ArrayList<>();
+   private boolean running = false;
+   private List<String> admins = new ArrayList<>(); // evol to list of userEntity
+   private List<Message> allServersMessages= new ArrayList<>();
 
 
-   public void addMessageLocation(MessageLocation messageLocation) {
+   public void addMessageLocation(Message messageLocation) {
        allServersMessages.add(messageLocation);
    }
 
