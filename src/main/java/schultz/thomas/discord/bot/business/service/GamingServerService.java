@@ -1,15 +1,13 @@
 package schultz.thomas.discord.bot.business.service;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
 import schultz.thomas.discord.bot.model.entity.DockerStateReport;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
 import java.util.List;
 
-public interface ServerService {
+public interface GamingServerService {
 
     public boolean createGamingServer(GamingServerEntity gsEntity);
 
@@ -36,9 +34,23 @@ public interface ServerService {
     /**
      * Update the message state for each gaming server entity
      * use jda to call this function outside of listener scope
-     * @param reports
+     * @param gsEntity
      * @param jda
      */
-    public void updateMessageStateFromDockerReport(DockerStateReport reports, JDA jda);
+    public void updateMessageStateFromGamingServer(GamingServerEntity gsEntity, JDA jda);
+
+    /**
+     * return all gaming server entities
+     * @return
+     */
+    public List<GamingServerEntity> getAllGameServerEntities();
+
+    /**
+     * Update all message states for each gaming server entity
+     *
+     * @param jda
+     * @return
+     */
+    public boolean updateAll(JDA jda);
 
 }

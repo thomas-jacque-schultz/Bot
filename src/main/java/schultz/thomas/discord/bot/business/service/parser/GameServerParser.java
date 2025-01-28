@@ -2,19 +2,29 @@ package schultz.thomas.discord.bot.business.service.parser;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
-@Mapper
-public interface  GameServerParser extends AbstractMapper {
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-    @Mapping(source = "payload", target = "serverInformation", qualifiedByName = "extractStringValue")
-    @Mapping(source = "payload", target = "name", qualifiedByName = "extractStringValue")
-    @Mapping(source = "payload", target = "url", qualifiedByName = "extractStringValue")
-    @Mapping(source = "payload", target = "playerCount", qualifiedByName = "extractIntValue")
-    @Mapping(source = "payload", target = "mods", qualifiedByName = "extractStringValue")
-    @Mapping(source = "payload", target = "version", qualifiedByName = "extractStringValue")
-    @Mapping(source = "payload", target = "regles", qualifiedByName = "extractStringValue")
-    @Mapping(source = "payload", target = "allowedAuthors", qualifiedByName = "extractStringListValue")
-    GamingServerEntity toServerEntity(String payload);
+@Mapper
+public interface  GameServerParser {
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "allServersMessages", ignore = true)
+    @Mapping(target = "admins")
+    GamingServerEntity toServerEntity(Map<String, String> arguments);
+
+    default List<String> toAdminsList(String admins) {
+        if (admins != null && !admins.isEmpty()) {
+            return Arrays.stream(admins.split("\\|"))
+                    .map(String::trim)
+                    .collect(Collectors.toList());
+        }
+        return null;
+    }
 
 }

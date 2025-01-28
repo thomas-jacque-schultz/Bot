@@ -1,4 +1,4 @@
-package schultz.thomas.discord.bot.business.service.mapper;
+package schultz.thomas.discord.bot.business.service;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -45,12 +45,12 @@ public class MessageWriter {
         embedBuilder.setColor(Color.CYAN);
 
         // Ajouter les champs principaux
-        embedBuilder.addField("URL :", gamingServerEntity.getConnexionString(), false);
+        embedBuilder.addField("URL :", gamingServerEntity.getUrl(), false);
         embedBuilder.addField("Nombre de joueurs max", String.valueOf(gamingServerEntity.getPlayersMax()), true);
         embedBuilder.addField("Version", gamingServerEntity.getVersion(), true);
 
-        if (gamingServerEntity.getInstallationDetails() != null && !gamingServerEntity.getInstallationDetails().isEmpty()) {
-            embedBuilder.addField("Installation :", gamingServerEntity.getInstallationDetails(), false);
+        if (gamingServerEntity.getInstallation() != null && !gamingServerEntity.getInstallation().isEmpty()) {
+            embedBuilder.addField("Installation :", gamingServerEntity.getInstallation(), false);
         }
 
         // Ajouter une description si elle existe

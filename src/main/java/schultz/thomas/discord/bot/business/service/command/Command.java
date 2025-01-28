@@ -1,6 +1,7 @@
 package schultz.thomas.discord.bot.business.service.command;
 
 import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
@@ -17,15 +18,16 @@ public interface Command {
     List<UserPrivilegeEnum> roleNeeded();
 
     /**
-     * Renvoi true si la commande est bien formée.
+     * interaction configuration in discord client
      * @return
      */
-    boolean isValid(CommandContext context);
+    CommandData getCommandData();
 
     /**
-     * Execute la commande.
+     * Renvoie l'enume de la commande.
+     * @return
      */
-    void execute(CommandContext context);
+    CommandEnum getEnum();
 
     /**
      * Renvoie true si les roles donnée (de l'utilisateur permette d'exécuté la commande).
@@ -36,8 +38,10 @@ public interface Command {
         return roleNeeded().contains(role);
     }
 
-    CommandEnum getEnum();
-
+    /**
+     * Execute la commande.
+     */
+    void execute(CommandContext context);
 
 
 }
