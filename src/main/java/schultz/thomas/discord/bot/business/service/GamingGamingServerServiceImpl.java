@@ -4,12 +4,9 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import schultz.thomas.discord.bot.business.service.mapper.MessageWriter;
 import schultz.thomas.discord.bot.business.service.mapper.ServeurEntityMapper;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
-import schultz.thomas.discord.bot.model.entity.DockerStateReport;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 import schultz.thomas.discord.bot.model.entity.Message;
 import schultz.thomas.discord.bot.model.repository.ChannelRepository;
@@ -21,7 +18,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GamingServerServiceImpl implements ServerService {
+public class GamingGamingServerServiceImpl implements GamingServerService {
 
 
     private List<GamingServerEntity> serveurStateCache;
@@ -88,26 +85,31 @@ public class GamingServerServiceImpl implements ServerService {
         gamingServerRepository.saveAll(serveurStateCache);
     }
 
-    @Override
-    public void updateMessageStateFromDockerReport(DockerStateReport report, JDA jda) {
-        GamingServerEntity gsEntity = serveurStateCache.stream()
-                .filter(server -> server.getIdentifier().equals(report.getGamingServerIdentifier()))
-                .findFirst()
-                .orElse(null);
+   @Override
+   public void updateMessageStateFromGamingServer(GamingServerEntity gsEntity, JDA jda) {
+        gsEntity.getAllServersMessages().forEach(message -> {
+               net.dv8tion.jda.api.entities.Message jdaMessage = jda.getTextChannelById(message.getChannelId()).getHistory().getMessageById(message.getMessageId());
+               messageWriter.updateMessage(gsEntity, jdaMessage);
+        });
+   }
 
-        if(gsEntity == null || gsEntity.isRunning() == report.isRunning()){
-            return;
-        }
-        else {
+    @Override
+    public List<GamingServerEntity> getAllGameServerEntities() {
+        return this.serveurStateCache;
+    }
+
+    @Override
+    public boolean updateAll(JDA jda) {
+        serveurStateCache.forEach(gsEntity -> {
             gsEntity.getAllServersMessages().forEach(message -> {
                 net.dv8tion.jda.api.entities.Message jdaMessage = jda.getTextChannelById(message.getChannelId()).getHistory().getMessageById(message.getMessageId());
                 messageWriter.updateMessage(gsEntity, jdaMessage);
             });
-        }
-
+        });
+        return true;
     }
 
-    public Message sendMessageFor(GamingServerEntity gsEntity, ChannelEntity channelEntity ,JDA jda){
+    private Message sendMessageFor(GamingServerEntity gsEntity, ChannelEntity channelEntity ,JDA jda){
         Message message = new Message();
         message.setGuildId(channelEntity.getGuildId());
         message.setChannelId(channelEntity.getChannelId());
@@ -115,5 +117,7 @@ public class GamingServerServiceImpl implements ServerService {
         messageWriter.sendMessage(Objects.requireNonNull(jda.getTextChannelById(channelEntity.getChannelId())), gsEntity);
         return message;
     }
+
+
 
 }

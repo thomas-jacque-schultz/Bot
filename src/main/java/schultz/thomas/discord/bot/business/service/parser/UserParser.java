@@ -4,14 +4,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import schultz.thomas.discord.bot.model.entity.UserEntity;
 
-import java.util.List;
+import java.util.Map;
 
 @Mapper
-public interface UserParser extends AbstractMapper {
+public interface UserParser   {
 
-    @Mapping(source = "payload", target = "discordId", qualifiedByName = "extractStringValue")
-    @Mapping(source = "payload", target = "discordUsername", qualifiedByName = "extractStringValue")
-    @Mapping(source = "payload", target = "privilege", qualifiedByName = "extractUserPrivilegeEnumValue")
-    UserEntity toUserEntity(List<String> payload);
+
+    @Mapping(target = "id", ignore = true)
+    UserEntity toUserEntity(Map<String, String> arguments);
 
 }

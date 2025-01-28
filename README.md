@@ -24,11 +24,11 @@ In discord user ID format is `245281978054737920`
 
 payload :
 
-    Serveur Information : [gaming-assetto]
+    identifier : [gaming-assetto]
     name : [Assetto Corsa]
     url : [assetto.schultz-thomas.fr]
-    playerCount : [12]
-    mods : [Download Modpack From Drive]
+    playersMax : [12]
+    installation : [Download Modpack From Drive]
     version : [1.16]
-    regles : [Course à paramétré sur l'interface Web]
-    admin : [Chacha | Pisel]
+    description : [Course à paramétré sur l'interface Web]
+    admins : [Chacha | Pisel]
