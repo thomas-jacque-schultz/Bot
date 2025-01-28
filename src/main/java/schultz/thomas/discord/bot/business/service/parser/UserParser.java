@@ -6,9 +6,8 @@ import schultz.thomas.discord.bot.model.entity.UserEntity;
 
 import java.util.Map;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface UserParser   {
-
 
     @Mapping(target = "id", ignore = true)
     UserEntity toUserEntity(Map<String, String> arguments);
