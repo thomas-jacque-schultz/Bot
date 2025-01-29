@@ -15,6 +15,7 @@ import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -26,7 +27,7 @@ public class StartServerGamingCommand implements Command {
 
     private final DockerService dockerService;
 
-    public List<UserPrivilegeEnum> roleNeeded(){ return List.of(UserPrivilegeEnum.ADMINISTRATOR); }
+    public List<UserPrivilegeEnum> roleNeeded(){ return new ArrayList<>( List.of(UserPrivilegeEnum.ADMINISTRATOR)); }
 
     @Override
     public CommandData getCommandData() {
