@@ -3,12 +3,12 @@ package schultz.thomas.discord.bot.Controllers.events;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.GatewayPingEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.springframework.stereotype.Component;
+import schultz.thomas.discord.bot.business.service.DockerService;
 import schultz.thomas.discord.bot.business.service.GamingServerService;
 
 import java.util.List;
@@ -21,6 +21,7 @@ public class ReadyListeners extends ListenerAdapter {
 
     private  final GamingServerService gamingServerService;
 
+    private final DockerService dockerService;
 
     private final List<CommandData> commandMap;
 
@@ -31,6 +32,7 @@ public class ReadyListeners extends ListenerAdapter {
             log.info("The Bot has started");
 
             gamingServerService.updateAll(event.getJDA());
+
             log.info("The Bot has finished updating the servers");
 
             commandMap.forEach(c -> {
@@ -45,8 +47,14 @@ public class ReadyListeners extends ListenerAdapter {
 
     @Override
     public void onGatewayPing(@Nonnull GatewayPingEvent event) {
+
+        gamingServerService.getAllGameServerEntities().forEach(g -> {
+            if(dockerService.serverStatusChanged(g)){
+                gamingServerService.updateMessageStateFromGamingServer(g, event.getJDA());
+            }
+        });
+
         log.info("The Bot has pinged the gateway");
     }
-
 
 }

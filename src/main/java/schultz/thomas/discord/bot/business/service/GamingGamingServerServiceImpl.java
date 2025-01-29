@@ -99,6 +99,11 @@ public class GamingGamingServerServiceImpl implements GamingServerService {
     }
 
     @Override
+    public GamingServerEntity getGameServerEntityByIdentifier(String identifier) {
+        return this.serveurStateCache.stream().filter(gs -> gs.getIdentifier().equals(identifier)).findFirst().orElse(null);
+    }
+
+    @Override
     public boolean updateAll(JDA jda) {
         serveurStateCache.forEach(gsEntity -> {
             gsEntity.getAllServersMessages().forEach(message -> {

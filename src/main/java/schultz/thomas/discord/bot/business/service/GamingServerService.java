@@ -46,6 +46,13 @@ public interface GamingServerService {
     public List<GamingServerEntity> getAllGameServerEntities();
 
     /**
+     * return the gaming server entity with the given identifier
+     * @param identifier
+     * @return
+     */
+    public GamingServerEntity getGameServerEntityByIdentifier(String identifier);
+
+    /**
      * Update all message states for each gaming server entity
      *
      * @param jda
