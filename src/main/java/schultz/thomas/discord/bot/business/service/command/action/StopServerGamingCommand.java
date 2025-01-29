@@ -20,23 +20,24 @@ import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
-public class StartServerGamingCommand implements Command {
+public class StopServerGamingCommand implements Command {
 
     private final GamingServerService gamingServerService;
 
     private final DockerService dockerService;
 
+
     public List<UserPrivilegeEnum> roleNeeded(){ return List.of(UserPrivilegeEnum.ADMINISTRATOR); }
 
     @Override
     public CommandData getCommandData() {
-        return  new CommandDataImpl("start", "lance le serveur de jeu")
+        return  new CommandDataImpl("stop", "->PAUSE<- le serveur de jeu")
                 .addOptions(new OptionData(OptionType.STRING, "identifier", "identifiant du serveur", true));
     }
 
     @Override
     public CommandEnum getEnum(){
-        return CommandEnum.START_SGAMING;
+        return CommandEnum.STOP_SGAMING;
     }
 
     @Override
@@ -44,8 +45,8 @@ public class StartServerGamingCommand implements Command {
         String discordIdentifier = Objects.requireNonNull(context.getCommand().getOption("identifier")).getAsString();
         GamingServerEntity gamingServerEntity = gamingServerService.getGameServerEntityByIdentifier(discordIdentifier);
         if (gamingServerEntity != null) {
-            if(dockerService.startServer(gamingServerEntity)){
-                context.getCommand().reply("Le serveur de jeu a été lancé").queue();
+            if(dockerService.stopServer(gamingServerEntity)){
+                context.getCommand().reply("Le serveur de jeu a été stoppé").queue();
             }
         }
     }
