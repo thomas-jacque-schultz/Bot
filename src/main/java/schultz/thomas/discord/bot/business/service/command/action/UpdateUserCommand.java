@@ -15,6 +15,7 @@ import schultz.thomas.discord.bot.business.service.parser.UserParser;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class UpdateUserCommand implements Command {
     private final UserParser userParser;
 
     @Override
-    public List<UserPrivilegeEnum> roleNeeded(){ return List.of(UserPrivilegeEnum.OWNER); }
+    public List<UserPrivilegeEnum> roleNeeded(){return new ArrayList<>( List.of(UserPrivilegeEnum.OWNER)); }
 
     @Override
     public CommandEnum getEnum(){
@@ -39,7 +40,7 @@ public class UpdateUserCommand implements Command {
     public CommandData getCommandData() {
        return  new CommandDataImpl("update-user", "mets à jour les autorisations d'un utilisateur")
                .addOptions(new OptionData(OptionType.STRING, "discordId", "id discord", true))
-               .addOptions(new OptionData(OptionType.STRING, "discordUsername", "pseudo", true))
+               .addOptions(new OptionData(OptionType.STRING, "discord-username", "pseudo", true))
                .addOptions(new OptionData(OptionType.STRING, "privilege", "privilège attribué", false));
     }
 

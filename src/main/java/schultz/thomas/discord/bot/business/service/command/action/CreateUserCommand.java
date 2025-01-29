@@ -15,9 +15,9 @@ import schultz.thomas.discord.bot.business.service.parser.UserParser;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -28,13 +28,15 @@ public class CreateUserCommand implements Command {
 
     private final UserParser userParser;
 
-    public List<UserPrivilegeEnum> roleNeeded(){ return List.of(UserPrivilegeEnum.ADMINISTRATOR); }
+    public List<UserPrivilegeEnum> roleNeeded(){
+        return new ArrayList<>( List.of(UserPrivilegeEnum.ADMINISTRATOR));
+    }
 
     @Override
     public CommandData getCommandData() {
         return  new CommandDataImpl("create-user", "mets à jour les autorisations d'un utilisateur")
                 .addOptions(new OptionData(OptionType.STRING, "discordId", "id discord", true))
-                .addOptions(new OptionData(OptionType.STRING, "discordUsername", "pseudo", true))
+                .addOptions(new OptionData(OptionType.STRING, "discord-username", "pseudo", true))
                 .addOptions(new OptionData(OptionType.STRING, "privilege", "privilège attribué", true));
     }
 
@@ -47,6 +49,7 @@ public class CreateUserCommand implements Command {
     public void execute(CommandContext context) {
         Map<String, String> options =  context.getCommand().getOptions().stream().collect(Collectors.toMap(OptionMapping::getName, OptionMapping::getAsString));
         userService.createUser(userParser.toUserEntity(options));
+        "".to
     }
 
 

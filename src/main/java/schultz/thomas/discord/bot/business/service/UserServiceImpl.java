@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 
     public void createUser(UserEntity ue) {
-        if(userStateCache.stream().anyMatch(user -> user.getDiscordId().equals(ue.getDiscordId()))) {
+        if(userStateCache.stream().anyMatch(user -> ue.getDiscordId().equals(user.getDiscordId()))) {
             throw new IllegalArgumentException("User already exists");
         }
         userStateCache.add(userRepository.save(ue));

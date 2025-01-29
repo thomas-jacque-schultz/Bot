@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class CommandConfiguration {
 
     @Bean
-    public List<CommandData> commandMap(List<Command> commands) {
+    public List<CommandData> getCommandMap(List<Command> commands) {
         return commands.stream().map(Command::getCommandData).collect(Collectors.toList());
     }
 }

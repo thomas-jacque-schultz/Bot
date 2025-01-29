@@ -35,7 +35,7 @@ public interface Command {
      * @return
      */
     default boolean hasRight(UserPrivilegeEnum role){
-        return roleNeeded().contains(role);
+        return  roleNeeded().contains(role);
     }
 
     /**

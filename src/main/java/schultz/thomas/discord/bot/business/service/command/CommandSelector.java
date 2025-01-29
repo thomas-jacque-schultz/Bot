@@ -12,17 +12,16 @@ import java.util.stream.Collectors;
 public class CommandSelector {
 
 
-    private final Map<CommandEnum, Command> commands;
+    private final Map<String, Command> commands;
 
     public CommandSelector(List<Command> commands){
         this.commands = commands.stream()
-                .collect(Collectors.toMap(Command::getEnum, Function.identity()));
+                .collect(Collectors.toMap(command -> command.getEnum().getCommandName(), Function.identity()));
     }
 
     public Command getCommand(String commandName /* message ?*/) {
-        CommandEnum com = CommandEnum.valueOf(commandName);
-        if(commands.containsKey(com)) {
-            return commands.get(com);
+        if(commands.containsKey(commandName)) {
+            return commands.get(commandName);
         }
         // Renvoyer command inconnue au bataillon
         return null;
