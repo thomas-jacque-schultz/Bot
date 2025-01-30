@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.GatewayPingEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.business.service.DockerService;
