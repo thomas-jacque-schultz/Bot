@@ -13,21 +13,6 @@ public enum UserPrivilegeEnum {
         ADMINISTRATOR("admin"),
         OWNER("moi");
 
-
         private final String privilegeName;
-
-        @Named("stringToUserPrivilegeEnum")
-        public static UserPrivilegeEnum stringToUserPrivilegeEnum(String privilege) {
-                if (privilege == null) {
-                        return null;
-                }
-                for (UserPrivilegeEnum value : UserPrivilegeEnum.values()) {
-                        if (value.getPrivilegeName().equalsIgnoreCase(privilege)) {
-                                return value;
-                        }
-                }
-                throw new IllegalArgumentException("Invalid privilege: " + privilege);
-        }
-
 }
 

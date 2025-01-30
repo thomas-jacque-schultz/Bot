@@ -29,7 +29,7 @@ public class UpdateUserCommand implements Command {
     private final UserParser userParser;
 
     @Override
-    public List<UserPrivilegeEnum> roleNeeded(){return new ArrayList<>( List.of(UserPrivilegeEnum.OWNER)); }
+    public List<UserPrivilegeEnum> roleNeeded(){return new ArrayList<>( List.of(UserPrivilegeEnum.OWNER, UserPrivilegeEnum.ADMINISTRATOR)); }
 
     @Override
     public CommandEnum getEnum(){
@@ -39,7 +39,7 @@ public class UpdateUserCommand implements Command {
     @Override
     public CommandData getCommandData() {
        return  new CommandDataImpl("update-user", "mets à jour les autorisations d'un utilisateur")
-               .addOptions(new OptionData(OptionType.STRING, "discordId", "id discord", true))
+               .addOptions(new OptionData(OptionType.STRING, "discord-id", "id discord", true))
                .addOptions(new OptionData(OptionType.STRING, "discord-username", "pseudo", true))
                .addOptions(new OptionData(OptionType.STRING, "privilege", "privilège attribué", false));
     }

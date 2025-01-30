@@ -4,6 +4,7 @@ package schultz.thomas.discord.bot.model.entity;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import schultz.thomas.discord.bot.model.enums.GamesNameEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,8 @@ public  class GamingServerEntity {
    private String id;            // auto generated uuid
    private String identifier;    // foreign key to other software
    private String name;
-   private String url;
+   private String urlConnection;
+   private GamesNameEnum gameName;
    private Integer playersMax;
    private String installation;
    private String version;
