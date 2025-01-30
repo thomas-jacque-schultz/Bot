@@ -40,6 +40,8 @@ public interface Command {
 
     /**
      * Execute la commande.
+     * @param context
+     * @return true si la commande a été exécuté.
      */
     void execute(CommandContext context);
 

@@ -27,7 +27,7 @@ public class StartServerGamingCommand implements Command {
 
     private final DockerService dockerService;
 
-    public List<UserPrivilegeEnum> roleNeeded(){ return new ArrayList<>( List.of(UserPrivilegeEnum.ADMINISTRATOR)); }
+    public List<UserPrivilegeEnum> roleNeeded(){ return new ArrayList<>( List.of(UserPrivilegeEnum.ADMINISTRATOR, UserPrivilegeEnum.OWNER)); }
 
     @Override
     public CommandData getCommandData() {

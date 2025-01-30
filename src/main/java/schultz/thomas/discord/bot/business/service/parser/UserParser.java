@@ -13,7 +13,6 @@ public interface UserParser   {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "discordId", source = "discord-id")
     @Mapping(target = "discordUsername", source = "discord-username")
-    @Mapping(target = "privilege", source = "privilege",  qualifiedByName = "stringToUserPrivilegeEnum")
     UserEntity toUserEntity(Map<String, String> arguments);
 
 }

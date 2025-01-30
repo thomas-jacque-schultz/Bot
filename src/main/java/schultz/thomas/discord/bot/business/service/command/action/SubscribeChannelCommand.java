@@ -8,10 +8,12 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.springframework.stereotype.Component;
+import schultz.thomas.discord.bot.business.service.GamingServerService;
 import schultz.thomas.discord.bot.business.service.UserService;
 import schultz.thomas.discord.bot.business.service.command.Command;
 import schultz.thomas.discord.bot.business.service.command.CommandContext;
-import schultz.thomas.discord.bot.business.service.parser.UserParser;
+import schultz.thomas.discord.bot.business.service.parser.GameServerParser;
+import schultz.thomas.discord.bot.model.entity.ChannelEntity;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
@@ -22,41 +24,42 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
-public class CreateUserCommand implements Command {
+public class SubscribeChannelCommand implements Command {
 
-    private final UserService userService;
+    private final GamingServerService gamingServerService;
 
-    private final UserParser userParser;
+    private final GameServerParser gameServerParser;
 
     public List<UserPrivilegeEnum> roleNeeded(){
-        return new ArrayList<>( List.of(UserPrivilegeEnum.ADMINISTRATOR, UserPrivilegeEnum.OWNER));
+        return new ArrayList<>( List.of(UserPrivilegeEnum.OWNER));
     }
 
     @Override
     public CommandData getCommandData() {
-        return  new CommandDataImpl("create-user", "mets à jour les autorisations d'un utilisateur")
-                .addOptions(new OptionData(OptionType.STRING, "discord-id", "id discord", true))
-                .addOptions(new OptionData(OptionType.STRING, "discord-username", "pseudo", true))
-                .addOptions(new OptionData(OptionType.STRING, "privilege", "privilège attribué", true));
+        return  new CommandDataImpl(CommandEnum.SUSBSCRIBE_A_CHANNEL.getCommandName(), "affiche l'état des serveurs dans ce channel");
     }
 
     @Override
     public CommandEnum getEnum(){
-        return CommandEnum.CREATE_USER;
+        return CommandEnum.SUSBSCRIBE_A_CHANNEL;
     }
 
     @Override
     public void execute(CommandContext context) {
-        Map<String, String> options =  context.getCommand().getOptions().stream().collect(Collectors.toMap(OptionMapping::getName, OptionMapping::getAsString));
-        //catch illegal argument exception
+        ChannelEntity channel = new ChannelEntity();
+        channel.setChannelId(context.getCommand().getChannel().getId());
+        channel.setName(context.getCommand().getChannel().getName());
+        channel.setGuildId(context.getCommand().getGuild().getId());
+        channel.setUsedForGamingServerStatus(true);
+
         try {
-            userService.createUser(userParser.toUserEntity(options));
+            gamingServerService.subscribeDiscordChannel(channel);
+            gamingServerService.createMessageStateFromDiscordChannel(channel, context.getJda());
         } catch (IllegalArgumentException e) {
-            context.getCommand().reply("L'utilisateur existe déjà").queue();
+            context.getCommand().reply("J'écrit déjà dans ce channel").queue();
             return;
         }
-
-        context.getCommand().reply("L'utilisateur a été créé").queue();
+        context.getCommand().reply("J'utilise maintenant ce channel pour les updates").queue();
     }
 
 

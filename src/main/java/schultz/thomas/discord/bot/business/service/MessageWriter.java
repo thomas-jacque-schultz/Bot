@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
 import java.awt.*;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -45,9 +46,9 @@ public class MessageWriter {
         embedBuilder.setColor(Color.CYAN);
 
         // Ajouter les champs principaux
-        embedBuilder.addField("URL :", gamingServerEntity.getUrl(), false);
+        embedBuilder.addField("URL :", gamingServerEntity.getUrlConnection(), false);
         embedBuilder.addField("Nombre de joueurs max", String.valueOf(gamingServerEntity.getPlayersMax()), true);
-        embedBuilder.addField("Version", gamingServerEntity.getVersion(), true);
+        embedBuilder.addField("Version", Objects.requireNonNullElse(gamingServerEntity.getVersion(),""), true);
 
         if (gamingServerEntity.getInstallation() != null && !gamingServerEntity.getInstallation().isEmpty()) {
             embedBuilder.addField("Installation :", gamingServerEntity.getInstallation(), false);

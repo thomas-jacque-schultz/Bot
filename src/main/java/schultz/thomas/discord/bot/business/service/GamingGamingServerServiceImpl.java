@@ -119,7 +119,6 @@ public class GamingGamingServerServiceImpl implements GamingServerService {
         message.setGuildId(channelEntity.getGuildId());
         message.setChannelId(channelEntity.getChannelId());
         message.setMessageId(messageWriter.sendMessage(Objects.requireNonNull(jda.getTextChannelById(channelEntity.getChannelId())), gsEntity));
-        messageWriter.sendMessage(Objects.requireNonNull(jda.getTextChannelById(channelEntity.getChannelId())), gsEntity);
         return message;
     }
 
