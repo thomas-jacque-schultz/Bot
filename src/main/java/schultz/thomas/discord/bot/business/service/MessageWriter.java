@@ -42,11 +42,11 @@ public class MessageWriter {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
         // Définir le titre comme le nom du serveur
-        embedBuilder.setTitle(gamingServerEntity.getName() + "[" + gamingServerEntity.getIdentifier() + "]");
-        embedBuilder.setColor(Color.CYAN);
+        embedBuilder.setTitle(gamingServerEntity.getGameName().getGameName() + " - " + gamingServerEntity.getName());
+        embedBuilder.setColor(gamingServerEntity.isRunning() ? Color.GREEN : Color.RED);
 
         // Ajouter les champs principaux
-        embedBuilder.addField("URL :", gamingServerEntity.getUrlConnection(), false);
+        embedBuilder.addField("URL : ```" + gamingServerEntity.getUrlConnection()+ "```","", false);
         embedBuilder.addField("Nombre de joueurs max", String.valueOf(gamingServerEntity.getPlayersMax()), true);
         embedBuilder.addField("Version", Objects.requireNonNullElse(gamingServerEntity.getVersion(),""), true);
 
@@ -62,11 +62,13 @@ public class MessageWriter {
         // Ajouter les auteurs autorisés si la liste n'est pas vide
         if (gamingServerEntity.getAdmins() != null && !gamingServerEntity.getAdmins().isEmpty()) {
             String authors = gamingServerEntity.getAdmins().stream().collect(Collectors.joining(", "));
-            embedBuilder.addField("Admin", authors, false);
+            embedBuilder.addField("Admin :", authors, false);
         }
 
         // Ajouter un pied de page avec l'ID du serveur
-        embedBuilder.setFooter("Statut : online", null);
+        embedBuilder.setFooter("Statut : " +  (gamingServerEntity.isRunning() ? "\uD83D\uDFE2":"\uD83D\uDD34"), null);
+
+        embedBuilder.setThumbnail(gamingServerEntity.getGameName().getIconUrl());
 
         // Retourner l'embed
         return embedBuilder.build();
