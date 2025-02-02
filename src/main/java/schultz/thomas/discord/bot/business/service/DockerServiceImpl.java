@@ -15,7 +15,7 @@ public class DockerServiceImpl implements DockerService{
     @Override
     public boolean serverStatusChanged(GamingServerEntity gamingServerEntity) {
         // docker ps -a | grep gamingServerEntity.getId() | awk '{print $7}' | grep -q "Up" && echo "true" || echo "false"
-        return false;
+        return true;
     }
 
     @Override
