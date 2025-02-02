@@ -18,7 +18,7 @@ import java.util.Objects;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GamingGamingServerServiceImpl implements GamingServerService {
+public class GamingServerServiceImpl implements GamingServerService {
 
 
     private List<GamingServerEntity> serveurStateCache;
@@ -88,9 +88,15 @@ public class GamingGamingServerServiceImpl implements GamingServerService {
    @Override
    public void updateMessageStateFromGamingServer(GamingServerEntity gsEntity, JDA jda) {
         gsEntity.getAllServersMessages().forEach(message -> {
-               net.dv8tion.jda.api.entities.Message jdaMessage = jda.getTextChannelById(message.getChannelId()).getHistory().getMessageById(message.getMessageId());
-               messageWriter.updateMessage(gsEntity, jdaMessage);
+                try {
+                    net.dv8tion.jda.api.entities.Message jdaMessage = jda.getTextChannelById(message.getChannelId()).getHistory().getMessageById(message.getMessageId());
+                    messageWriter.updateMessage(gsEntity, jdaMessage);
+                } catch (NullPointerException e) {
+                    log.error("Message was removed from discord, creating a new one");
+                    message.setMessageId(messageWriter.sendMessage(Objects.requireNonNull(jda.getTextChannelById(message.getChannelId())), gsEntity));
+                }
         });
+        gamingServerRepository.save(gsEntity);
    }
 
     @Override

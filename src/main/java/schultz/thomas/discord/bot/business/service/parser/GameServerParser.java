@@ -20,6 +20,7 @@ public interface  GameServerParser {
     //discord command option with uppercase
     @Mapping(target = "playersMax", source = "players-max")
     @Mapping(target = "urlConnection", source = "url-connection")
+    @Mapping(target = "gameName", source = "game-name")
     //string to list of string
     @Mapping(target = "admins", source = "admins", qualifiedByName = "toAdminsList")
     GamingServerEntity toServerEntity(Map<String, String> arguments);
