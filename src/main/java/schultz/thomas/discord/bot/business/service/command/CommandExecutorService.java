@@ -46,7 +46,9 @@ public class CommandExecutorService {
         }
 
 
-        command.execute(context);
+        String commandResult = command.execute(context);
+
+        discordContext.reply(commandResult).queue();
     }
 
 }

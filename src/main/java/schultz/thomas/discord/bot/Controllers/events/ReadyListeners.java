@@ -3,6 +3,7 @@ package schultz.thomas.discord.bot.Controllers.events;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GatewayPingEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -47,9 +48,10 @@ public class ReadyListeners extends ListenerAdapter {
     @Override
     public void onGatewayPing(@Nonnull GatewayPingEvent event) {
 
-        event.getJDA().getGuilds().forEach(g -> {
-            log.info("The Bot has pinged the gateway" + g.getName());
-        });
+        //check if jda is ready
+        if(event.getJDA().getStatus() != JDA.Status.CONNECTED){
+            return;
+        }
 
         gamingServerService.getAllGameServerEntities().forEach(g -> {
             if(dockerService.serverStatusChanged(g)){
