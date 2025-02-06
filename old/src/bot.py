@@ -37,8 +37,8 @@ async def init_state():
     
 
     for technical_channel, serveur_states in technical_channels.items() :
-        async for message in channel.history(limit=10):
-             print(message.content)
+        async for messageEntity in channel.history(limit=10):
+             print(messageEntity.content)
 
 async def get_servers_state_list():
     states = list()
@@ -55,16 +55,16 @@ async def get_servers_state_list():
     return states
 
 #async def initialize_status_message():
-#    """Créer ou récupérer le message de statut."""
+#    """Créer ou récupérer le messageEntity de statut."""
 #    global status_message
 #    channel = bot.get_channel(STATUS_CHANNEL_ID)
 #    if not channel:
 #        print("Canal introuvable. Vérifiez l'ID.")
 #        return
 #
-#    async for message in channel.history(limit=10):  # Cherche dans l'historique du canal
-#        if message.author == bot.user:
-#            status_message = message
+#    async for messageEntity in channel.history(limit=10):  # Cherche dans l'historique du canal
+#        if messageEntity.author == bot.user:
+#            status_message = messageEntity
 #            break
 #
 #    if not status_message:

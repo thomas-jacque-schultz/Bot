@@ -4,11 +4,13 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.springframework.stereotype.Service;
 import schultz.thomas.discord.bot.business.service.mapper.ServeurEntityMapper;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
-import schultz.thomas.discord.bot.model.entity.Message;
+import schultz.thomas.discord.bot.model.entity.MessageEntity;
 import schultz.thomas.discord.bot.model.repository.ChannelRepository;
 import schultz.thomas.discord.bot.model.repository.GamingServerRepository;
 
@@ -87,13 +89,14 @@ public class GamingServerServiceImpl implements GamingServerService {
 
    @Override
    public void updateMessageStateFromGamingServer(GamingServerEntity gsEntity, JDA jda) {
-        gsEntity.getAllServersMessages().forEach(message -> {
+        gsEntity.getAllServersMessageEntities().forEach(messageEntity -> {
                 try {
-                    net.dv8tion.jda.api.entities.Message jdaMessage = jda.getTextChannelById(message.getChannelId()).getHistory().getMessageById(message.getMessageId());
+                    channel.
+                    Message jdaMessage = channel.getHistory().getMessageById(messageEntity.getMessageId());
                     messageWriter.updateMessage(gsEntity, jdaMessage);
                 } catch (NullPointerException e) {
                     log.error("Message was removed from discord, creating a new one");
-                    message.setMessageId(messageWriter.sendMessage(Objects.requireNonNull(jda.getTextChannelById(message.getChannelId())), gsEntity));
+                    messageEntity.setMessageId(messageWriter.sendMessage(Objects.requireNonNull(channel), gsEntity));
                 }
         });
         gamingServerRepository.save(gsEntity);
@@ -112,20 +115,20 @@ public class GamingServerServiceImpl implements GamingServerService {
     @Override
     public boolean updateAll(JDA jda) {
         serveurStateCache.forEach(gsEntity -> {
-            gsEntity.getAllServersMessages().forEach(message -> {
-                net.dv8tion.jda.api.entities.Message jdaMessage = jda.getTextChannelById(message.getChannelId()).getHistory().getMessageById(message.getMessageId());
+            gsEntity.getAllServersMessageEntities().forEach(messageEntity -> {
+                net.dv8tion.jda.api.entities.Message jdaMessage = jda.getTextChannelById(messageEntity.getChannelId()).getHistory().getMessageById(messageEntity.getMessageId());
                 messageWriter.updateMessage(gsEntity, jdaMessage);
             });
         });
         return true;
     }
 
-    private Message sendMessageFor(GamingServerEntity gsEntity, ChannelEntity channelEntity ,JDA jda){
-        Message message = new Message();
-        message.setGuildId(channelEntity.getGuildId());
-        message.setChannelId(channelEntity.getChannelId());
-        message.setMessageId(messageWriter.sendMessage(Objects.requireNonNull(jda.getTextChannelById(channelEntity.getChannelId())), gsEntity));
-        return message;
+    private MessageEntity sendMessageFor(GamingServerEntity gsEntity, ChannelEntity channelEntity , JDA jda){
+        MessageEntity messageEntity = new MessageEntity();
+        messageEntity.setGuildId(channelEntity.getGuildId());
+        messageEntity.setChannelId(channelEntity.getChannelId());
+        messageEntity.setMessageId(messageWriter.sendMessage(Objects.requireNonNull(jda.getTextChannelById(channelEntity.getChannelId())), gsEntity));
+        return messageEntity;
     }
 
 
