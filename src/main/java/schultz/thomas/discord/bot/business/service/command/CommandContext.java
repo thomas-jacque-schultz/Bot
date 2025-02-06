@@ -7,18 +7,19 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class CommandContext {
 
     private JDA jda;
     private String commandName;
-    private SlashCommandInteraction command;
+    private Map<String, String> options;
 
-    public CommandContext(JDA jda, String commandName, SlashCommandInteraction command) {
+    public CommandContext(JDA jda, String commandName, Map<String, String> options) {
         this.jda = jda;
         this.commandName = commandName;
-        this.command = command;
+        this.options = options;
     }
 
 }
