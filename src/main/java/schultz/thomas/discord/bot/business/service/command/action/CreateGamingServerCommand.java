@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.springframework.stereotype.Component;
+import schultz.thomas.discord.bot.Controllers.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.business.service.GamingServerService;
 import schultz.thomas.discord.bot.business.service.UserService;
 import schultz.thomas.discord.bot.business.service.command.Command;
@@ -57,17 +58,16 @@ public class CreateGamingServerCommand implements Command {
     }
 
     @Override
-    public void execute(CommandContext context) {
-        Map<String, String> options =  context.getCommand().getOptions().stream().collect(Collectors.toMap(OptionMapping::getName, OptionMapping::getAsString));
+    public String execute(CommandContext context) {
         try {
-            GamingServerEntity gsEntity = gameServerParser.toServerEntity(options);
+            GamingServerEntity gsEntity = gameServerParser.toServerEntity(context.getOptions());
             gamingServerService.createGamingServer(gsEntity);
             gamingServerService.createMessageStateFromGamingServer(gsEntity, context.getJda());
-        } catch (IllegalArgumentException e) {
-            context.getCommand().reply("Le serveur existe déjà").queue();
-            return;
         }
-        context.getCommand().reply("Le serveur à été crée").queue();
+        catch (IllegalArgumentException e) {
+            throw new CommandFailedException("Le serveur existe déjà");
+        }
+        return "Le serveur à été crée";
     }
 
 

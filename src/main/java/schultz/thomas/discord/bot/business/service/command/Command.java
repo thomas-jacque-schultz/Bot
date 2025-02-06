@@ -1,11 +1,10 @@
 package schultz.thomas.discord.bot.business.service.command;
 
-import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import schultz.thomas.discord.bot.Controllers.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
-import java.util.HashSet;
 import java.util.List;
 
 public interface Command {
@@ -41,9 +40,9 @@ public interface Command {
     /**
      * Execute la commande.
      * @param context
-     * @return true si la commande a été exécuté.
+     * @return le message de retour
      */
-    void execute(CommandContext context);
+    String execute(CommandContext context) throws CommandFailedException;
 
 
 }

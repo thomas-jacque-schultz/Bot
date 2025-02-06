@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.springframework.stereotype.Component;
+import schultz.thomas.discord.bot.Controllers.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.business.service.GamingServerService;
 import schultz.thomas.discord.bot.business.service.UserService;
 import schultz.thomas.discord.bot.business.service.command.Command;
@@ -45,21 +46,20 @@ public class SubscribeChannelCommand implements Command {
     }
 
     @Override
-    public void execute(CommandContext context) {
+    public String execute(CommandContext context) {
         ChannelEntity channel = new ChannelEntity();
-        channel.setChannelId(context.getCommand().getChannel().getId());
-        channel.setName(context.getCommand().getChannel().getName());
-        channel.setGuildId(context.getCommand().getGuild().getId());
+        channel.setChannelId(context.getOptions().get("channel-id"));
+        channel.setName(context.getOptions().get("channel-name"));
+        channel.setGuildId(context.getOptions().get("guild-id"));
         channel.setUsedForGamingServerStatus(true);
 
         try {
             gamingServerService.subscribeDiscordChannel(channel);
             gamingServerService.createMessageStateFromDiscordChannel(channel, context.getJda());
         } catch (IllegalArgumentException e) {
-            context.getCommand().reply("J'écrit déjà dans ce channel").queue();
-            return;
+            throw new CommandFailedException("Impossible de créer le channel : " + e.getMessage());
         }
-        context.getCommand().reply("J'utilise maintenant ce channel pour les updates").queue();
+        return "J'utilise maintenant ce channel pour les updates";
     }
 
 
