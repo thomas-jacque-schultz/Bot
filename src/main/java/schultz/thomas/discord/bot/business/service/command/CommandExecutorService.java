@@ -1,9 +1,14 @@
 package schultz.thomas.discord.bot.business.service.command;
 
 import lombok.RequiredArgsConstructor;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.springframework.stereotype.Service;
 import schultz.thomas.discord.bot.business.service.UserService;
+
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -14,18 +19,29 @@ public class CommandExecutorService {
     private final UserService userService;
 
     public void handleCommand(SlashCommandInteractionEvent discordContext) {
+        Map<String, String> options =  discordContext.getOptions().stream().collect(Collectors.toMap(OptionMapping::getName, OptionMapping::getAsString));
+        options.put("user-id", discordContext.getUser().getId());
+        options.put("user-name", discordContext.getUser().getName());
+        options.put("channel-id", discordContext.getChannel().getId());
+        options.put("channel-name", discordContext.getChannel().getName());
+        options.put("guild-id", discordContext.getGuild().getId());
+        options.put("guild-name", discordContext.getGuild().getName());
 
-        CommandContext context = new CommandContext(discordContext.getJDA(), discordContext.getName(), discordContext.getInteraction());
+        String commandName = discordContext.getName();
+        JDA jda = discordContext.getJDA();
+
+        CommandContext context = new CommandContext(jda, commandName, options);
+
 
         Command command = commandSelector.getCommand(discordContext.getName());
 
         if (command == null) {
-            context.getCommand().reply("RTFM : " + discordContext.getName()).queue();
+            discordContext.reply("RTFM : " + discordContext.getName()).queue();
             throw new IllegalArgumentException("RTFM : " + discordContext.getName());
         }
 
         if (!command.hasRight(userService.getRole(discordContext.getUser().getId())) ) {
-            context.getCommand().reply("The emperor of Holy Terra didn't allow you to : " + discordContext.getName()).queue();
+            discordContext.reply("The emperor of Holy Terra didn't allow you to : " + discordContext.getName()).queue();
            throw new IllegalArgumentException("The emperor of Holy Terra didn't allow you to : " + discordContext.getName());
         }
 

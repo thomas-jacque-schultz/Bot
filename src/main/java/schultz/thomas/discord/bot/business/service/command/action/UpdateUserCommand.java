@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.springframework.stereotype.Component;
+import schultz.thomas.discord.bot.Controllers.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.business.service.UserService;
 import schultz.thomas.discord.bot.business.service.command.Command;
 import schultz.thomas.discord.bot.business.service.command.CommandContext;
@@ -45,8 +46,13 @@ public class UpdateUserCommand implements Command {
     }
 
     @Override
-    public void execute(CommandContext context) {
-        Map<String, String> options =  context.getCommand().getOptions().stream().collect(Collectors.toMap(OptionMapping::getName, OptionMapping::getAsString));
-        userService.updateUser(userParser.toUserEntity(options));
+    public String execute(CommandContext context) {
+        try {
+        userService.updateUser(userParser.toUserEntity(context.getOptions()));
+        }
+        catch (IllegalArgumentException e) {
+            throw new CommandFailedException("Impossible de mettre à jour l'utilisateur : " + e.getMessage());
+        }
+        return "Utilisateur mis à jour";
     }
 }

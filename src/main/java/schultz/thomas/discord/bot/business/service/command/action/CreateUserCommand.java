@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.springframework.stereotype.Component;
+import schultz.thomas.discord.bot.Controllers.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.business.service.UserService;
 import schultz.thomas.discord.bot.business.service.command.Command;
 import schultz.thomas.discord.bot.business.service.command.CommandContext;
@@ -46,17 +47,13 @@ public class CreateUserCommand implements Command {
     }
 
     @Override
-    public void execute(CommandContext context) {
-        Map<String, String> options =  context.getCommand().getOptions().stream().collect(Collectors.toMap(OptionMapping::getName, OptionMapping::getAsString));
-        //catch illegal argument exception
+    public String execute(CommandContext context) {
         try {
-            userService.createUser(userParser.toUserEntity(options));
+            userService.createUser(userParser.toUserEntity(context.getOptions()));
         } catch (IllegalArgumentException e) {
-            context.getCommand().reply("L'utilisateur existe déjà").queue();
-            return;
+            throw new CommandFailedException("Impossible de créer l'utilisateur : " + e.getMessage());
         }
-
-        context.getCommand().reply("L'utilisateur a été créé").queue();
+        return "Utilisateur créé";
     }
 
 

@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.springframework.stereotype.Component;
+import schultz.thomas.discord.bot.Controllers.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.business.service.DockerService;
 import schultz.thomas.discord.bot.business.service.GamingServerService;
 import schultz.thomas.discord.bot.business.service.command.Command;
@@ -41,13 +42,15 @@ public class StartServerGamingCommand implements Command {
     }
 
     @Override
-    public void execute(CommandContext context) {
-        String discordIdentifier = Objects.requireNonNull(context.getCommand().getOption("identifier")).getAsString();
-        GamingServerEntity gamingServerEntity = gamingServerService.getGameServerEntityByIdentifier(discordIdentifier);
-        if (gamingServerEntity != null) {
-            if(dockerService.startServer(gamingServerEntity)){
-                context.getCommand().reply("Le serveur de jeu a été lancé").queue();
-            }
+    public String execute(CommandContext context) {
+        GamingServerEntity gamingServerEntity = gamingServerService.getGameServerEntityByIdentifier(context.getOptions().get("identifier"));
+        if (gamingServerEntity == null) {
+            throw new CommandFailedException("Le serveur de jeu n'existe pas");
         }
+        boolean startSuccess = dockerService.startServer(gamingServerEntity);
+        if(!startSuccess){
+            throw new CommandFailedException("Impossible de lancer le serveur de jeu");
+        }
+            return "Serveur de jeu lancé";
     }
 }
