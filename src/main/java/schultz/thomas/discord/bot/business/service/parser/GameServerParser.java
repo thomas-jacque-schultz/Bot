@@ -14,8 +14,7 @@ import java.util.stream.Collectors;
 public interface  GameServerParser {
 
     //ignored fields are not mapped
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "allServersMessages", ignore = true)
+    @Mapping(target = "allServersMessageEntities", ignore = true)
     @Mapping(target = "running", ignore = true)
     //discord command option with uppercase
     @Mapping(target = "playersMax", source = "players-max")

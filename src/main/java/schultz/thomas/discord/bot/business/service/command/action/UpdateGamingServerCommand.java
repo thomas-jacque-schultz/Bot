@@ -41,11 +41,12 @@ public class UpdateGamingServerCommand implements Command {
                 .addOptions(new OptionData(OptionType.STRING, "identifier", "identifiant du serveur", true))
                 .addOptions(new OptionData(OptionType.STRING, "name", "nom du serveur", true))
                 .addOptions(new OptionData(OptionType.STRING, "url-connection", "url de connection", true))
+                .addOptions(new OptionData(OptionType.STRING, "game-name", "nom du jeu", true))
                 .addOptions(new OptionData(OptionType.INTEGER, "players-max", "nombre de joueurs max", true))
                 .addOptions(new OptionData(OptionType.STRING, "installation", "installation", true))
                 .addOptions(new OptionData(OptionType.STRING, "admins", "liste des admins", true))
-                .addOptions(new OptionData(OptionType.STRING, "game-name", "nom du jeu", true))
                 .addOptions(new OptionData(OptionType.STRING, "version", "version", false))
+                .addOptions(new OptionData(OptionType.STRING, "id", "id pour modifier identifier", false))
                 .addOptions(new OptionData(OptionType.STRING, "description", "description", false));
     }
 

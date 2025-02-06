@@ -21,8 +21,16 @@ public class DiscordConfiguration {
     private String token;
 
 
-    @Bean()
+    @Bean
     public JDA jda(List<ListenerAdapter> listeners) throws InterruptedException {
-        return new JdaStub();
+        return JDABuilder
+                .createDefault(token)
+                .enableIntents(GatewayIntent.MESSAGE_CONTENT)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(GatewayIntent.GUILD_MESSAGE_TYPING)
+                .enableIntents(GatewayIntent.GUILD_MESSAGES)
+                .addEventListeners(listeners.toArray(new ListenerAdapter[0]))
+                .build()
+                .awaitReady();
     }
 }
