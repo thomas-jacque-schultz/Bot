@@ -47,10 +47,15 @@ public class ReadyListeners extends ListenerAdapter {
     @Override
     public void onGatewayPing(@Nonnull GatewayPingEvent event) {
 
+        event.getJDA().getGuilds().forEach(g -> {
+            log.info("The Bot has pinged the gateway" + g.getName());
+        });
+
         gamingServerService.getAllGameServerEntities().forEach(g -> {
             if(dockerService.serverStatusChanged(g)){
                 gamingServerService.updateMessageStateFromGamingServer(g, event.getJDA());
             }
+            log.info("The Bot has updated the server status");
         });
 
         log.info("The Bot has pinged the gateway");

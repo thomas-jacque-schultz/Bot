@@ -3,7 +3,7 @@
 
     // Channel -> Server
     // -> Event id - Message Id
-    // Mise à jour des message sur le server.
+    // Mise à jour des messageEntity sur le server.
     // (Command) event.getJda().getServerById()
     // ServerMapper.map(...)
     // Server.refreshMessage()
