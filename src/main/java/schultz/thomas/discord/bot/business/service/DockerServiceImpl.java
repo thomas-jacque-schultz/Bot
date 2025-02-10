@@ -20,12 +20,6 @@ import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 public class DockerServiceImpl implements DockerService{
 
     // http client object to call portainer API
-    
-
-
-
-
-
 
     @Override
     public boolean serverStatusChanged(GamingServerEntity gamingServerEntity) {
