@@ -3,10 +3,13 @@ package schultz.thomas.discord.bot.business.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import schultz.thomas.discord.bot.model.response.DockerContainerInfo;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service("portainerRequestService")
@@ -36,10 +39,11 @@ public class PortainerRequestService implements ContainerRequestService{
     }
 
     @Override
-    public Map<String, String> getContainerState(String containerName) {
+    public LinkedHashMap<String, Object> getContainerState(String containerName) {
         return restClient.get()
                 .uri("/containers/{name}/json", containerName)
+                .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .body(new ParameterizedTypeReference<>() {});
+                .body(new ParameterizedTypeReference<LinkedHashMap<String, Object>>() {});
     }
 }

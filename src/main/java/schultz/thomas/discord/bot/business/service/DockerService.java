@@ -6,9 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
+import schultz.thomas.discord.bot.model.response.DockerContainerInfo;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Slf4j
@@ -30,8 +33,8 @@ public class DockerService {
     }
 
     public void fetchAndNotifyGamingServerContainerStatus(String containerName) {
-        Map<String,String> currentState = containerRequestService.getContainerState(containerName);
-        log.info("Container state : " + currentState);
+        LinkedHashMap<String, Object> currentState = containerRequestService.getContainerState(containerName);
+        log.info("Container state : " + currentState.get("State"));
         // send notification in spring event queue
     }
 
