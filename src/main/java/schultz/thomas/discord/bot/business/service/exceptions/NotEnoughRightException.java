@@ -1,4 +1,4 @@
-package schultz.thomas.discord.bot.Controllers.exceptions;
+package schultz.thomas.discord.bot.business.service.exceptions;
 
 import lombok.experimental.StandardException;
 

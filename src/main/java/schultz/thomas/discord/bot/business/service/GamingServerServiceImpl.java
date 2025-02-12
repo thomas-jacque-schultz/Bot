@@ -88,7 +88,7 @@ public class GamingServerServiceImpl implements GamingServerService {
     }
 
     @Override
-    public void updateMessageStateFromGamingServer(GamingServerEntity gsEntity, JDA jda) {
+    public void refreshGamingServerMessage(GamingServerEntity gsEntity, JDA jda) {
         gsEntity.getAllServersMessageEntities().forEach(messageEntity -> {
             TextChannel channel = jda.getTextChannelById(messageEntity.getChannelId());
                 Message jdaMessage = channel.retrieveMessageById(messageEntity.getMessageId()).complete();
@@ -115,7 +115,7 @@ public class GamingServerServiceImpl implements GamingServerService {
     @Override
     public boolean updateAll(JDA jda) {
         serveurStateCache.forEach(gsEntity -> {
-            updateMessageStateFromGamingServer(gsEntity, jda);
+            refreshGamingServerMessage(gsEntity, jda);
         });
         return true;
     }

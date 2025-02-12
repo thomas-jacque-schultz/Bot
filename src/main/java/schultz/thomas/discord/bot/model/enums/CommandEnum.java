@@ -19,7 +19,9 @@ public enum CommandEnum {
     UPDATE_USER("update-user"),
 
     CREATE_GAMING_SERVER("create-gaming-server"),
-    UPDATE_GAMING_SERVER("update-gaming-server");
+    UPDATE_GAMING_SERVER("update-gaming-server"),
+
+    REFRESH_GAMING_SERVER_MESSAGE("refresh-status");
 
     private final String commandName;
 
