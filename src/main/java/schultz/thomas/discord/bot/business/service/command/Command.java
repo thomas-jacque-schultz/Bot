@@ -1,7 +1,7 @@
 package schultz.thomas.discord.bot.business.service.command;
 
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import schultz.thomas.discord.bot.Controllers.exceptions.CommandFailedException;
+import schultz.thomas.discord.bot.business.service.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 

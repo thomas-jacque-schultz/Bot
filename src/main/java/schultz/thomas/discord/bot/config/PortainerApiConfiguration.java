@@ -1,8 +1,11 @@
 package schultz.thomas.discord.bot.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,59 +17,23 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Configuration WebClient for Portainer API
  */
+@RequiredArgsConstructor
+@Configuration
 public class PortainerApiConfiguration {
 
-    @Value("${portainer.api.url}")
-    private String PORTAINER_BASE_URL ;
-    @Value("${portainer.api.username}")
-    private static final String USERNAME = "admin";
-    @Value("${portainer.api.password}")
-    private static final String PASSWORD = "your-password";
-    private static final String LOGIN_ENDPOINT = "/api/auth";
+    private final String BASE_URL =  "https://localhost:22002";
 
-    private final AtomicReference<String> tokenCache = new AtomicReference<>();
+    private final String token = "ptr_Ih4JwtMxEHaicDNWwsC0D6cah7GnyEymxjOziN+aQNs=";
 
-
-    @Bean
-    public WebClient portainerWebClient(WebClient.Builder builder) {
-        return WebClient.builder()
-                .filter(ExchangeFilterFunction.ofRequestProcessor(
-                        (ClientRequest request) -> Mono.just(
-                                ClientRequest.from(request)
-                                        .header("Access-Token", getValidToken())
-                                        .build()
-                        )
-                ))
+    /**
+     * Create a WebClient for Portainer API with X-API-Key header
+     * @return
+     */
+    @Bean("portainerRestClient")
+    public RestClient restClient() {
+        return RestClient.builder()
+                .baseUrl(BASE_URL)
+                .defaultHeader("X-API-Key", token)
                 .build();
-    }
-
-    private void refreshToken() {
-        WebClient webClient = WebClient.create(PORTAINER_BASE_URL);
-
-        String token = webClient.post()
-                .uri(LOGIN_ENDPOINT)
-                .bodyValue(Map.of("username", USERNAME, "password", PASSWORD))
-                .retrieve()
-                .bodyToMono(Map.class)
-                .map(response -> (String) response.get("jwt"))
-                .block(); // Blocking to ensure token is set at startup
-
-        tokenCache.set(token);
-    }
-
-    private String getValidToken() {
-        if (tokenCache.get() == null  || isTokenExpired(tokenCache.get())) {
-            refreshToken();
-        }
-        return tokenCache.get();
-    }
-
-    private boolean isTokenExpired(String token) {
-        // Check if token is expired
-        // extract expiration date from token
-        // compare with current date
-
-
-        return false;
     }
 }

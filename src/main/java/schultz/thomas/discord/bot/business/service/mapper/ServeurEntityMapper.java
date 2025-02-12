@@ -7,6 +7,6 @@ import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 public interface ServeurEntityMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "allServersMessages", ignore = true)
+    @Mapping(target = "allServersMessageEntities", ignore = true)
     void updateServeurEntityFromSource(GamingServerEntity source, @MappingTarget GamingServerEntity target);
 }

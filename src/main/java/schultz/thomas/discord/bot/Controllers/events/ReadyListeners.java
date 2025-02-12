@@ -45,22 +45,22 @@ public class ReadyListeners extends ListenerAdapter {
 
     }
 
-    @Override
-    public void onGatewayPing(@Nonnull GatewayPingEvent event) {
-
-        //check if jda is ready
-        if(event.getJDA().getStatus() != JDA.Status.CONNECTED){
-            return;
-        }
-
-        gamingServerService.getAllGameServerEntities().forEach(g -> {
-            if(dockerService.serverStatusChanged(g)){
-                gamingServerService.updateMessageStateFromGamingServer(g, event.getJDA());
-            }
-            log.info("The Bot has updated the server status");
-        });
-
-        log.info("The Bot has pinged the gateway");
-    }
+   // @Override
+   // public void onGatewayPing(@Nonnull GatewayPingEvent event) {
+//
+   //     //check if jda is ready
+   //     if(event.getJDA().getStatus() != JDA.Status.CONNECTED){
+   //         return;
+   //     }
+//
+   //     gamingServerService.getAllGameServerEntities().forEach(g -> {
+   //         if(dockerService.serverStatusChanged(g)){
+   //             gamingServerService.refreshGamingServerMessage(g, event.getJDA());
+   //         }
+   //         log.info("The Bot has updated the server status");
+   //     });
+//
+   //     log.info("The Bot has pinged the gateway");
+   // }
 
 }

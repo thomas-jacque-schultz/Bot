@@ -2,7 +2,6 @@ package schultz.thomas.discord.bot.business.service;
 
 import net.dv8tion.jda.api.JDA;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
-import schultz.thomas.discord.bot.model.entity.DockerStateReport;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public interface GamingServerService {
      * @param gsEntity
      * @param jda
      */
-    public void updateMessageStateFromGamingServer(GamingServerEntity gsEntity, JDA jda);
+    public void refreshGamingServerMessage(GamingServerEntity gsEntity, JDA jda);
 
     /**
      * return all gaming server entities
