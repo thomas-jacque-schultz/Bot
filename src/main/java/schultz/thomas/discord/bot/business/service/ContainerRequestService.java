@@ -1,14 +1,15 @@
 package schultz.thomas.discord.bot.business.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import schultz.thomas.discord.bot.model.response.DockerContainerInfo;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.Objects;
 
 @Service
 public interface ContainerRequestService {
 
     public boolean startContainer(String containerName);
     public boolean stopContainer(String containerName);
-    public Map<String,String> getContainerState(String containerName);
+    public LinkedHashMap<String, Object> getContainerState(String containerName);
 }

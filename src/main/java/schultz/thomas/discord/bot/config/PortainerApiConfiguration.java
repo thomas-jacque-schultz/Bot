@@ -1,18 +1,9 @@
 package schultz.thomas.discord.bot.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.reactive.function.client.ClientRequest;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Configuration WebClient for Portainer API
@@ -21,9 +12,9 @@ import java.util.concurrent.atomic.AtomicReference;
 @Configuration
 public class PortainerApiConfiguration {
 
-    private final String BASE_URL =  "https://localhost:22002";
+    private final String BASE_URL =  "http://localhost:9000/api/endpoints/1/docker";
 
-    private final String token = "ptr_Ih4JwtMxEHaicDNWwsC0D6cah7GnyEymxjOziN+aQNs=";
+    private final String token = "ptr_1vBs/ZEvQx4Ejw1WktkyBzCAHomj2OYjaMehBw9Fu6U=";
 
     /**
      * Create a WebClient for Portainer API with X-API-Key header
