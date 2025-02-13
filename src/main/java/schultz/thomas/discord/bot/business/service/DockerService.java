@@ -56,7 +56,7 @@ public class DockerService {
         }
         // access nested linkedHashMap
         LinkedHashMap<String, Object> state = (LinkedHashMap<String, Object>) currentState.get("State");
-        return state.get("isRunning").equals("true");
+        return state.get("Running").equals(true);
     }
 
     public boolean startServer(GamingServerEntity gamingServerEntity) {

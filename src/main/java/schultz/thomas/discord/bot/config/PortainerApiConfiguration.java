@@ -14,7 +14,7 @@ public class PortainerApiConfiguration {
 
     private final String BASE_URL =  "http://localhost:9000/api/endpoints/1/docker";
 
-    private final String token = "ptr_1vBs/ZEvQx4Ejw1WktkyBzCAHomj2OYjaMehBw9Fu6U=";
+    private final String token = "ptr_MW6d8jVA8uddZkVczAPaGscrPa31MlRy5L0B4Lem5+4=";
 
     /**
      * Create a WebClient for Portainer API with X-API-Key header
