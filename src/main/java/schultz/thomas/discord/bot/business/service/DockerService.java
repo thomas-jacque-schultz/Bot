@@ -23,19 +23,40 @@ import java.util.Objects;
  */
 public class DockerService {
 
-    private Map<String,String> containersStateCache = new HashMap<>();
+    private Map<String, String> containersStateCache = new HashMap<>();
 
     @Qualifier("portainerRequestService")
     private final ContainerRequestService containerRequestService;
 
-    public void fetchAndNotifyGamingServerContainerStatus(GamingServerEntity gamingServerEntity) {
-        fetchAndNotifyGamingServerContainerStatus(gamingServerEntity.getIdentifier());
+
+    /**
+     * Fetch container status and return if the container changed status
+     *
+     * @param gamingServerEntity
+     * @return
+     */
+    public boolean fetchAndNotifyGamingServerContainerStatus(GamingServerEntity gamingServerEntity) {
+        boolean before = gamingServerEntity.isRunning();
+        gamingServerEntity.setRunning(fetchAndNotifyGamingServerContainerStatus(gamingServerEntity.getIdentifier()));
+        return before != gamingServerEntity.isRunning();
     }
 
-    public void fetchAndNotifyGamingServerContainerStatus(String containerName) {
+    /**
+     * Fetch container status and return if the container is running
+     *
+     * @param containerName
+     * @return
+     */
+    public boolean fetchAndNotifyGamingServerContainerStatus(String containerName) {
         LinkedHashMap<String, Object> currentState = containerRequestService.getContainerState(containerName);
         log.info("Container state : " + currentState.get("State"));
-        // send notification in spring event queue
+
+        if (currentState.get("State") == null || !(currentState.get("State") instanceof LinkedHashMap)) {
+            throw new IllegalArgumentException("Container not found");
+        }
+        // access nested linkedHashMap
+        LinkedHashMap<String, Object> state = (LinkedHashMap<String, Object>) currentState.get("State");
+        return state.get("isRunning").equals("true");
     }
 
     public boolean startServer(GamingServerEntity gamingServerEntity) {

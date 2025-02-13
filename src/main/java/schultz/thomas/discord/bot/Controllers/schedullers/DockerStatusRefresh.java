@@ -12,16 +12,23 @@ import schultz.thomas.discord.bot.business.service.GamingServerService;
 @Slf4j
 @RequiredArgsConstructor
 @Component
+/**
+ * for later use in V3
+ */
 public class DockerStatusRefresh {
-
-    private final DockerService dockerService;
-
-    private final GamingServerService gamingServerService;
-
-    @Scheduled(fixedRate = 60000) // every minute
-    public void refreshDockerStatus() {
-        log.info("Refreshing docker status");
-        gamingServerService.getAllGameServerEntities().parallelStream().forEach(dockerService::fetchAndNotifyGamingServerContainerStatus);
-    }
+//
+   // private final DockerService dockerService;
+//
+   // private final GamingServerService gamingServerService;
+//
+   // @Scheduled(fixedRate = 60000) // every minute
+   // public void refreshDockerStatus() {
+   //     log.info("Refreshing docker status");
+   //     gamingServerService
+   //             .getAllGameServerEntities()
+   //             .parallelStream()
+   //             .filter(dockerService::fetchAndNotifyGamingServerContainerStatus)
+   //             .forEach(gamingServerService::refreshGamingServerMessage);
+   // }
 }
 
