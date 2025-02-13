@@ -42,7 +42,12 @@ public class MessageWriter {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
         // Définir le titre comme le nom du serveur
-        embedBuilder.setTitle(gamingServerEntity.getGameName().getGameName() + " - " + gamingServerEntity.getName());
+        if(gamingServerEntity.getName() == null || gamingServerEntity.getName().isEmpty()){
+            embedBuilder.setTitle(gamingServerEntity.getName());
+        }
+        else {
+            embedBuilder.setTitle(gamingServerEntity.getGameName().getGameName() + " - " + gamingServerEntity.getName());
+        }
         embedBuilder.setColor(gamingServerEntity.isRunning() ? Color.GREEN : Color.RED);
 
         // Ajouter les champs principaux
