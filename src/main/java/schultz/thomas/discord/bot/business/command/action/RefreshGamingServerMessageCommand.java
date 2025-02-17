@@ -5,12 +5,14 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.business.command.Command;
 import schultz.thomas.discord.bot.business.command.CommandContext;
 import schultz.thomas.discord.bot.business.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.business.services.DockerService;
 import schultz.thomas.discord.bot.business.services.GamingServerService;
+import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
@@ -24,6 +26,7 @@ public class RefreshGamingServerMessageCommand implements Command {
 
     private final GamingServerService gamingServerService;
     private final DockerService dockerService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public List<UserPrivilegeEnum> roleNeeded(){
         return new ArrayList<>( List.of(UserPrivilegeEnum.ADMINISTRATOR, UserPrivilegeEnum.OWNER));
@@ -44,7 +47,9 @@ public class RefreshGamingServerMessageCommand implements Command {
     public String execute(CommandContext context) {
         try {
             GamingServerEntity gs = gamingServerService.getGameServerEntityByIdentifier(context.getOptions().get("gaming-serveur-identifiant"));
-            dockerService.fetchAndNotifyGamingServerContainerStatus(gs);
+            if(dockerService.fetchAndNotifyGamingServerContainerStatus(gs)){
+                applicationEventPublisher.publishEvent(new GamingServerEvent(this, gs, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED));
+            }
         } catch (IllegalArgumentException e) {
             throw new CommandFailedException("Impossible de refresh le message : " + context.getOptions().get("gaming-serveur-identifiant"));
         }

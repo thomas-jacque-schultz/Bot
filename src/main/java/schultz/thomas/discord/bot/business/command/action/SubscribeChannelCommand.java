@@ -4,12 +4,17 @@ package schultz.thomas.discord.bot.business.command.action;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.business.command.Command;
 import schultz.thomas.discord.bot.business.command.CommandContext;
-import schultz.thomas.discord.bot.business.service.exceptions.CommandFailedException;
-import schultz.thomas.discord.bot.business.service.parser.GameServerParser;
+import schultz.thomas.discord.bot.business.exceptions.CommandFailedException;
+import schultz.thomas.discord.bot.business.parser.GameServerParser;
+import schultz.thomas.discord.bot.business.services.DiscordMessageService;
+import schultz.thomas.discord.bot.business.services.GamingServerService;
+import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
+import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
@@ -20,9 +25,12 @@ import java.util.List;
 @Component
 public class SubscribeChannelCommand implements Command {
 
+    private final DiscordMessageService discordMessageService;
+
     private final GamingServerService gamingServerService;
 
-    private final GameServerParser gameServerParser;
+    private final ApplicationEventPublisher applicationEventPublisher;
+
 
     public List<UserPrivilegeEnum> roleNeeded(){
         return new ArrayList<>( List.of(UserPrivilegeEnum.OWNER));
@@ -44,11 +52,14 @@ public class SubscribeChannelCommand implements Command {
         channel.setChannelId(context.getOptions().get("channel-id"));
         channel.setName(context.getOptions().get("channel-name"));
         channel.setGuildId(context.getOptions().get("guild-id"));
-        channel.setUsedForGamingServerStatus(true);
+        channel.setMessages(new ArrayList<>());
 
         try {
-            gamingServerService.subscribeDiscordChannel(channel);
-            gamingServerService.createMessageStateFromDiscordChannel(channel, context.getJda());
+            discordMessageService.subscribeDiscordChannel(channel);
+            List<GamingServerEntity> serverNames = gamingServerService.getAllGameServerEntities();
+            serverNames.forEach(server -> {
+                applicationEventPublisher.publishEvent(new GamingServerEvent(this, server, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED));
+            });
         } catch (IllegalArgumentException e) {
             throw new CommandFailedException("Impossible de créer le channel : " + e.getMessage());
         }

@@ -9,6 +9,6 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class DockerContainerState {
 
-    private boolean runnning;
+    private boolean running;
 
 }
