@@ -24,12 +24,6 @@ public  class GamingServerEntity {
    private String version;
    private String description;
    private List<String> admins = new ArrayList<>(); // evol to list of userEntity
-   private List<MessageEntity> allServersMessageEntities = new ArrayList<>();
    private boolean running = false;
-
-
-   public void addMessageLocation(MessageEntity messageEntityLocation) {
-       allServersMessageEntities.add(messageEntityLocation);
-   }
 
 }
