@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
@@ -45,34 +46,57 @@ public class DiscordMessageService {
 
     /**
         * Sends a message to the channel with the Game server name
-        * Only if the server is not already in the channel
+        * if successful return save the message ID
      * @param channel  the channel to send the message
      * @param gamingServerEntity  the server to send
      * @return the message ID
      */
-    public String sendMessage(ChannelEntity channel, GamingServerEntity gamingServerEntity) {
-        TextChannel channelDiscord = jda.getTextChannelById(channel.getId());
-        return channelDiscord.sendMessageEmbeds(createEmbedFromServer(gamingServerEntity)).complete().getId();
+    public void sendMessage(ChannelEntity channel, GamingServerEntity gamingServerEntity) {
+        jda.getTextChannelById(channel.getChannelId())
+                .sendMessageEmbeds(createEmbedFromServer(gamingServerEntity)).onSuccess(message -> {
+                    MessageEntity messageEntity = new MessageEntity();
+                    messageEntity.setEntityId(gamingServerEntity.getId());
+                    messageEntity.setMessageId(message.getId());
+                    channel.getMessages().add(messageEntity);
+                    channelRepository.save(channel);
+                }).queue();
     }
 
     /**
-        * Updates the message in the channel with the Game server name
+     * Updates the message in the channel with the Game server name
+     * if failed : remove the message and call sendMessage
      */
-    public String updateMessage(GamingServerEntity gamingServerEntity,ChannelEntity channel, Message message) {
-        return message.editMessageEmbeds(createEmbedFromServer(gamingServerEntity)).complete().getId();
+    public void updateMessageOrCreate(GamingServerEntity gamingServerEntity,ChannelEntity channel, MessageEntity message) {
+        jda.getTextChannelById(channel.getChannelId())
+                .editMessageEmbedsById(message.getMessageId(), createEmbedFromServer(gamingServerEntity))
+                .queue(
+                        success -> { /* Ne rien faire si tout se passe bien */ },
+                        failure -> {
+                            channel.getMessages().remove(message);
+                            channelRepository.save(channel);
+                            sendMessage(channel, gamingServerEntity);
+                        }
+                );
     }
 
     public void deleteMessageForGamingServerEntity(GamingServerEntity gamingServerEntity, JDA jda) {
     }
 
-
+    /**
+     * Handle the three situations
+     * 1. The message doesn't exist, we create it
+     * 2. The message exists we update it
+     * 3. The message where deleted outside of the bot, we recreate it
+     * @param gsEntity the server to handle
+     * @param jda the discord bot
+     */
     public void createOrUpdateMessageForGamingServerEntity(GamingServerEntity gsEntity, JDA jda) {
         //for each subscribed channel we get the message or null to create it
         subscribedChannelsCache.forEach(channelEntity -> {
             MessageEntity existingMessage = channelEntity
-                    .getMessages()
-                    .stream()
-                    .filter(messageEntity -> messageEntity.getEntityId().equals(gsEntity.getId())).findFirst().orElse(null);
+                .getMessages()
+                .stream()
+                .filter(messageEntity -> messageEntity.getEntityId().equals(gsEntity.getId())).findFirst().orElse(null);
 
             //create Message
             if(Objects.isNull(existingMessage)){
@@ -80,9 +104,8 @@ public class DiscordMessageService {
             }
             //update Message or if failed recreate it
             else{
-                updateMessage(gsEntity, jda.getTextChannelById(channelEntity.getId()).retrieveMessageById(existingMessage.getMessageId()).complete());
+                updateMessageOrCreate(gsEntity, channelEntity, existingMessage);
             }
-
         });
     }
 

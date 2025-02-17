@@ -3,8 +3,10 @@ package schultz.thomas.discord.bot.model.entity;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import schultz.thomas.discord.bot.model.enums.GamesNameEnum;
+import schultz.thomas.discord.bot.model.transitoy.DockerContainerState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,5 +27,8 @@ public  class GamingServerEntity {
    private String description;
    private List<String> admins = new ArrayList<>(); // evol to list of userEntity
    private boolean running = false;
+
+   @Transient
+    private DockerContainerState status;
 
 }

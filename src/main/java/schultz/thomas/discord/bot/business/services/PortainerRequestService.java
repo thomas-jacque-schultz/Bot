@@ -7,12 +7,10 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import schultz.thomas.discord.bot.business.dtos.DockerContainerStateDto;
+import schultz.thomas.discord.bot.model.transitoy.DockerContainerState;
 import schultz.thomas.discord.bot.business.parser.DiscordContainerStateParser;
-import schultz.thomas.discord.bot.model.response.DockerContainerInfo;
 
 import java.util.LinkedHashMap;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service("portainerRequestService")
@@ -46,7 +44,7 @@ public class PortainerRequestService implements ContainerRequestService {
     }
 
     @Override
-    public DockerContainerStateDto getContainerState(String containerName) {
+    public DockerContainerState getContainerState(String containerName) {
         LinkedHashMap<String, Object> answer = restClient.get()
                 .uri("/containers/{name}/json", containerName)
                 .accept(MediaType.APPLICATION_JSON)
