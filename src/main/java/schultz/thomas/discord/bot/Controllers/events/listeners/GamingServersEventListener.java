@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.business.services.DiscordMessageService;
 import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
-import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
 @Component
 @RequiredArgsConstructor

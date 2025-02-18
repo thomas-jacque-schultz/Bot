@@ -3,18 +3,16 @@ package schultz.thomas.discord.bot.business.services;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import schultz.thomas.discord.bot.business.mapper.ServeurEntityMapper;
 import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
-import schultz.thomas.discord.bot.model.entity.ChannelEntity;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
-import schultz.thomas.discord.bot.model.entity.MessageEntity;
 import schultz.thomas.discord.bot.model.repository.GamingServerRepository;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
@@ -35,7 +33,7 @@ public class GamingServerService {
 
     public void createGamingServer(GamingServerEntity gsEntity) {
         if (serveurStateCache.stream().anyMatch(server -> server.getIdentifier().equals(gsEntity.getIdentifier()))) {
-            throw new IllegalArgumentException("Server already exists");
+            throw new EntityExistsException("Server already exists" + gsEntity.getIdentifier());
         }
         GamingServerEntity gamingServerEntity = gamingServerRepository.save(gsEntity);
         applicationEventPublisher.publishEvent(new GamingServerEvent(this, gamingServerEntity, GamingServerEvent.GamingServerEventType.SERVER_CREATED));
@@ -48,7 +46,7 @@ public class GamingServerService {
                 .findFirst()
                 .orElse(null);
         if (candidate == null) {
-            throw new IllegalArgumentException("Server not found");
+            throw new EntityNotFoundException("Server not found" + gsEntity.getIdentifier());
         }
         serveurEntityMapper.updateServeurEntityFromSource(gsEntity, candidate);
         gamingServerRepository.save(candidate);

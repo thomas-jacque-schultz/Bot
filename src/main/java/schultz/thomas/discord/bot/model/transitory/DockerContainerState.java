@@ -1,4 +1,4 @@
-package schultz.thomas.discord.bot.model.transitoy;
+package schultz.thomas.discord.bot.model.transitory;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

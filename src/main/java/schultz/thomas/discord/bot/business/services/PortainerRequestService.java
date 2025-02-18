@@ -7,7 +7,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import schultz.thomas.discord.bot.model.transitoy.DockerContainerState;
+import schultz.thomas.discord.bot.model.transitory.DockerContainerState;
 import schultz.thomas.discord.bot.business.parser.DiscordContainerStateParser;
 
 import java.util.LinkedHashMap;

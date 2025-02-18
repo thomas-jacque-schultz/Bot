@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import schultz.thomas.discord.bot.model.transitoy.DockerContainerState;
-import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
+import schultz.thomas.discord.bot.model.transitory.DockerContainerState;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
 import java.util.*;

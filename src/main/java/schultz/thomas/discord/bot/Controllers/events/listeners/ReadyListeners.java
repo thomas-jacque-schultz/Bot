@@ -19,12 +19,7 @@ import java.util.List;
 @Component
 public class ReadyListeners extends ListenerAdapter {
 
-
-    private final GamingServerService gamingServerService;
-
-    private final DockerService dockerService;
     private final List<CommandData> getCommandMap;
-
 
     @Override
     public void onReady(ReadyEvent event) {
@@ -40,26 +35,4 @@ public class ReadyListeners extends ListenerAdapter {
         log.info("The Bot has finished creating discord commands");
 
     }
-
-  //  @Override
-  //  public void onGatewayPing(@Nonnull GatewayPingEvent event) {
-  //      log.debug("Gateway pinged");
-//
-  //      //check if jda is ready
-  //      if (event.getJDA().getStatus() != JDA.Status.CONNECTED) {
-  //          return;
-  //      }
-//
-  //      log.debug("Refreshing docker status");
-//
-//
-  //      gamingServerService
-  //              .getAllGameServerEntities()
-  //              .parallelStream()
-  //              .filter(dockerService::fetchAndNotifyGamingServerContainerStatus)
-  //              .forEach(g -> gamingServerService.refreshGamingServerMessage(g, event.getJDA()));
-//
-  //      log.info("Docker status refreshed");
-  //  }
-
 }

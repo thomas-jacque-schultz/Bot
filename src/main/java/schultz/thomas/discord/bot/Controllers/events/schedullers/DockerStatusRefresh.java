@@ -26,11 +26,17 @@ public class DockerStatusRefresh {
     @Scheduled(fixedRate = 60000) // every minute
     public void refreshDockerStatus() {
         log.info("Refreshing docker status");
-        gamingServerService
-                .getAllGameServerEntities()
-                .parallelStream()
-                .filter(dockerService::fetchAndNotifyGamingServerContainerStatus)
-                .forEach( gamingServerEntity -> {applicationEventPublisher.publishEvent(new GamingServerEvent(this, gamingServerEntity, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED));});
+        try {
+            gamingServerService.getAllGameServerEntities()
+                    .parallelStream()
+                    .filter(dockerService::fetchAndNotifyGamingServerContainerStatus)
+                    .forEach(gamingServerEntity -> {
+                        applicationEventPublisher.publishEvent(new GamingServerEvent(this, gamingServerEntity, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED));
+                        log.info("Published event for GamingServerEntity ID {}", gamingServerEntity.getId());
+                    });
+        } catch (Exception e) {
+            log.error("Error while refreshing docker status", e);
+        }
     }
 }
 

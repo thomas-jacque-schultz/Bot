@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import schultz.thomas.discord.bot.model.enums.GamesNameEnum;
-import schultz.thomas.discord.bot.model.transitoy.DockerContainerState;
+import schultz.thomas.discord.bot.model.transitory.DockerContainerState;
 
 import java.util.ArrayList;
 import java.util.List;

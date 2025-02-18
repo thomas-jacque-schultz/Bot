@@ -2,7 +2,7 @@ package schultz.thomas.discord.bot.business.parser;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import schultz.thomas.discord.bot.model.transitoy.DockerContainerState;
+import schultz.thomas.discord.bot.model.transitory.DockerContainerState;
 
 import java.util.LinkedHashMap;
 
