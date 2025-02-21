@@ -17,13 +17,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-    
-      - name: Analyze with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@v2.2.0
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
+
+      - name: Set up Java with Maven
+        uses: actions/setup-java@v2
         with:
-          args: >
-            -Dsonar.projectKey=thomas-jacque-schultz_Bot
-            -Dsonar.organization=thomas-jacque-schultz
-          
+          java-version: '21'  # Assurez-vous que la version de Java correspond à celle de votre projet
+          distribution: 'temurin'
+
+      - name: Build with Maven and analyze with SonarCloud
+        run: mvn clean verify sonar:sonar -Dsonar.projectKey=thomas-jacque-schultz_Bot -Dsonar.organization=thomas-jacque-schultz -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      - name: Run SonarCloud analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
