@@ -1,34 +1,65 @@
 package schultz.thomas.discord.bot.Controllers.events;
 
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.GatewayPingEvent;
-import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.springframework.stereotype.Component;
-import schultz.thomas.discord.bot.business.service.ServerService;
+import schultz.thomas.discord.bot.business.service.DockerService;
+import schultz.thomas.discord.bot.business.service.GamingServerService;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class ReadyListeners implements EventListener {
+public class ReadyListeners extends ListenerAdapter {
 
 
-    private  final ServerService serverService;
+    private  final GamingServerService gamingServerService;
+
+    private final DockerService dockerService;
+    private final List<CommandData> getCommandMap;
+
 
     @Override
-    public void onEvent(GenericEvent genericEvent) {
+    public void onReady(ReadyEvent event) {
 
-        if (genericEvent instanceof ReadyEvent){
             log.info("The Bot has started");
-            serverService.refreshServers(genericEvent);
-        }
 
-        if(genericEvent instanceof GatewayPingEvent){
-            serverService.refreshServers(genericEvent);
-        }
+            getCommandMap.forEach(c -> {
+                event.getJDA().getGuilds().forEach(g -> {
+                    g.upsertCommand(c).queue();
+                });
+            });
+
+            log.info("The Bot has finished creating discord commands");
+
     }
 
+@Override
+public void onGatewayPing(@Nonnull GatewayPingEvent event) {
+    log.debug("Gateway pinged");
+
+    //check if jda is ready
+    if(event.getJDA().getStatus() != JDA.Status.CONNECTED){
+        return;
+    }
+
+    log.debug("Refreshing docker status");
+
+
+    gamingServerService
+            .getAllGameServerEntities()
+            .parallelStream()
+            .filter(dockerService::fetchAndNotifyGamingServerContainerStatus)
+            .forEach( g -> gamingServerService.refreshGamingServerMessage(g, event.getJDA()) );
+
+    log.info("Docker status refreshed");
+}
 
 }

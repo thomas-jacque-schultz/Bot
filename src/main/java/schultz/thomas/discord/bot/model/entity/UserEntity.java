@@ -1,16 +1,21 @@
 package schultz.thomas.discord.bot.model.entity;
 
+
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
 import java.util.List;
 
 @Data
-@Document( collection = "guilds" )
-public class GuildEntity {
+@Document( collection = "users" )
+public class UserEntity {
+
     @Id
     private String id;
-    private String name;
-    private List<ChannelEntity> channels;
+    private String discordId;
+    private String discordUsername;
+    private UserPrivilegeEnum privilege;
+
 }

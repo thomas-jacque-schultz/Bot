@@ -1,12 +1,11 @@
 package schultz.thomas.discord.bot.business.service.mapper;
 
 import org.mapstruct.*;
-import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
+import schultz.thomas.discord.bot.model.entity.UserEntity;
 
 @Mapper(componentModel = "spring", collectionMappingStrategy = CollectionMappingStrategy.TARGET_IMMUTABLE)
-public interface ServeurEntityMapper {
+public interface UserEntityMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "allServersMessageEntities", ignore = true)
-    void updateServeurEntityFromSource(GamingServerEntity source, @MappingTarget GamingServerEntity target);
+    void updateUserEntityFromSource(UserEntity source, @MappingTarget UserEntity target);
 }
