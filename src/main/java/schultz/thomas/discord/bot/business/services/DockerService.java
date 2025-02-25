@@ -36,6 +36,7 @@ public class DockerService {
         DockerContainerState state = containerRequestService.getContainerState(gamingServerEntity.getIdentifier());
         // if the state is null, the container is unreachable
         if (Objects.isNull(state)){
+
             throw new RuntimeException("Container state unreachable");
         }
         // if the status is null the state is updated
@@ -44,7 +45,7 @@ public class DockerService {
             return true;
         }
         // if the status is different from the state, the state is updated
-        if (state.equals(gamingServerEntity.getStatus())){
+        if (!state.equals(gamingServerEntity.getStatus())){
             gamingServerEntity.setStatus(state);
             return true;
         }

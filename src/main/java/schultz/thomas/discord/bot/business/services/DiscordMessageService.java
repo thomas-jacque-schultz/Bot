@@ -135,7 +135,7 @@ public class DiscordMessageService {
         else {
             embedBuilder.setTitle(gamingServerEntity.getGameName().getGameName() + " - " + gamingServerEntity.getName());
         }
-        embedBuilder.setColor(gamingServerEntity.isRunning() ? Color.GREEN : Color.RED);
+        embedBuilder.setColor(gamingServerEntity.getStatus().isRunning() ? Color.GREEN : Color.RED);
 
         // Ajouter les champs principaux
         embedBuilder.addField("URL : ```" + gamingServerEntity.getUrlConnection()+ "```","", false);
@@ -157,8 +157,12 @@ public class DiscordMessageService {
             embedBuilder.addField("Admin :", authors, false);
         }
 
+        if(gamingServerEntity.getIdentifier() != null && !gamingServerEntity.getIdentifier().isEmpty()){
+            embedBuilder.addField("Identifiant :", gamingServerEntity.getIdentifier(), false);
+        }
+
         // Ajouter un pied de page avec l'ID du serveur
-        embedBuilder.setFooter("Statut : " +  (gamingServerEntity.isRunning() ? "\uD83D\uDFE2":"\uD83D\uDD34"), null);
+        embedBuilder.setFooter("Statut : " +  (gamingServerEntity.getStatus().isRunning() ? "\uD83D\uDFE2":"\uD83D\uDD34"), null);
 
         embedBuilder.setThumbnail(gamingServerEntity.getGameName().getIconUrl());
 

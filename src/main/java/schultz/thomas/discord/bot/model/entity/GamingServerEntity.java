@@ -26,7 +26,6 @@ public  class GamingServerEntity {
    private String version;
    private String description;
    private List<String> admins = new ArrayList<>(); // evol to list of userEntity
-   private boolean running = false;
 
    @Transient
     private DockerContainerState status;

@@ -32,7 +32,7 @@ public class StopServerGamingCommand implements Command {
 
     @Override
     public CommandData getCommandData() {
-        return  new CommandDataImpl("stop", "->PAUSE<- le serveur de jeu")
+        return  new CommandDataImpl("pause", "->PAUSE<- le serveur de jeu")
                 .addOptions(new OptionData(OptionType.STRING, "identifier", "identifiant du serveur", true));
     }
 
