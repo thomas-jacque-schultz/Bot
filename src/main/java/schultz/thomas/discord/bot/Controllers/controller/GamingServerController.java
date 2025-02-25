@@ -1,21 +1,17 @@
-package schultz.thomas.discord.bot.Controllers.controller;
+package schultz.thomas.discord.bot.controllers.controller;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
-import net.dv8tion.jda.internal.interactions.command.SlashCommandInteractionImpl;
 import org.springframework.web.bind.annotation.*;
-import schultz.thomas.discord.bot.business.service.command.Command;
-import schultz.thomas.discord.bot.business.service.command.CommandContext;
-import schultz.thomas.discord.bot.business.service.command.CommandExecutorService;
-import schultz.thomas.discord.bot.business.service.command.CommandSelector;
+import schultz.thomas.discord.bot.business.command.Command;
+import schultz.thomas.discord.bot.business.command.CommandContext;
+import schultz.thomas.discord.bot.business.command.CommandExecutorService;
+import schultz.thomas.discord.bot.business.command.CommandSelector;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @RestController

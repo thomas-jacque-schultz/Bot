@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Data
 @Document( collection = "channels" )
 public class ChannelEntity {
@@ -15,5 +17,5 @@ public class ChannelEntity {
     private String name;        // ref to discord channel name
     private String guildId;     // ref to discord server id
 
-    private boolean usedForGamingServerStatus = false;
+    private List<MessageEntity> messages;
 }
