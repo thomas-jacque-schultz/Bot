@@ -1,7 +1,6 @@
 package schultz.thomas.discord.bot.business.command;
 
 import org.springframework.stereotype.Component;
-import schultz.thomas.discord.bot.model.enums.CommandEnum;
 
 import java.util.List;
 import java.util.Map;

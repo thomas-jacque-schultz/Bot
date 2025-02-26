@@ -9,7 +9,7 @@ public interface UserService {
 
     void updateUser(UserEntity ue);
 
-    public UserPrivilegeEnum getRole(String discordId);
+    UserPrivilegeEnum getRole(String discordId);
 
     UserEntity get(String discordId);
 }

@@ -58,9 +58,7 @@ public class StopServerGamingCommand implements Command {
             throw new CommandFailedException("Impossible de pauser le serveur de jeu");
         }
 
-        scheduler.schedule(() -> {
-            applicationEventPublisher.publishEvent(new schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent(this, gamingServerEntity, schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED));
-        }, 10, java.util.concurrent.TimeUnit.SECONDS);
+        scheduler.schedule(() -> applicationEventPublisher.publishEvent(new schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent(this, gamingServerEntity, schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED)), 10, java.util.concurrent.TimeUnit.SECONDS);
 
         return "Serveur de jeu est en pause";
     }

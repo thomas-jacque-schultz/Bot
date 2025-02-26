@@ -1,4 +1,4 @@
-package schultz.thomas.discord.bot.Controllers.events.schedullers;
+package schultz.thomas.discord.bot.controllers.events.schedullers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

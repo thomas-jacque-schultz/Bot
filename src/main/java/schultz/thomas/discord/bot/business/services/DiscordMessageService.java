@@ -5,11 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.requests.RestAction;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
@@ -103,7 +100,7 @@ public class DiscordMessageService {
      * Handle the three situations
      * 1. The message doesn't exist, we create it
      * 2. The message exists we update it
-     * 3. The message where deleted outside of the bot, we recreate it
+     * 3. The message where deleted outside the bot, we recreate it
      * @param gsEntity the server to handle
      */
     public void createOrUpdateMessageForGamingServerEntity(GamingServerEntity gsEntity, JDA jda) {
@@ -122,7 +119,7 @@ public class DiscordMessageService {
     }
 
     /**
-        * With all fields of the serverEntity, we can create a message a embeded message
+        * With all fields of the serverEntity, we can create a message an embeded message
      */
     private MessageEmbed createEmbedFromServer(GamingServerEntity gamingServerEntity) {
         // Création d'un EmbedBuilder

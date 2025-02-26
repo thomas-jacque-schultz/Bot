@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.business.command.Command;
 import schultz.thomas.discord.bot.business.command.CommandContext;
 import schultz.thomas.discord.bot.business.exceptions.CommandFailedException;
-import schultz.thomas.discord.bot.business.parser.GameServerParser;
 import schultz.thomas.discord.bot.business.services.DiscordMessageService;
 import schultz.thomas.discord.bot.business.services.GamingServerService;
 import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
@@ -57,9 +56,7 @@ public class SubscribeChannelCommand implements Command {
         try {
             discordMessageService.subscribeDiscordChannel(channel);
             List<GamingServerEntity> serverNames = gamingServerService.getAllGameServerEntities();
-            serverNames.forEach(server -> {
-                applicationEventPublisher.publishEvent(new GamingServerEvent(this, server, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED));
-            });
+            serverNames.forEach(server -> applicationEventPublisher.publishEvent(new GamingServerEvent(this, server, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED)));
         } catch (IllegalArgumentException e) {
             throw new CommandFailedException("Impossible de créer le channel : " + e.getMessage());
         }
