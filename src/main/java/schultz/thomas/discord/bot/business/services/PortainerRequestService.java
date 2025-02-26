@@ -30,7 +30,7 @@ public class PortainerRequestService implements ContainerRequestService {
                 .retrieve()
                 .body(String.class); // Modify based on actual response
 
-        return response != null;
+        return response == null;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PortainerRequestService implements ContainerRequestService {
                 .retrieve()
                 .body(String.class);
 
-        return response != null;
+        return response == null;
     }
 
     @Override
