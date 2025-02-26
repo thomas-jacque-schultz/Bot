@@ -6,7 +6,7 @@ import schultz.thomas.discord.bot.model.transitory.DockerContainerState;
 @Service
 public interface ContainerRequestService {
 
-    public boolean startContainer(String containerName);
-    public boolean stopContainer(String containerName);
-    public DockerContainerState getContainerState(String containerName);
+    boolean startContainer(String containerName);
+    boolean stopContainer(String containerName);
+    DockerContainerState getContainerState(String containerName);
 }

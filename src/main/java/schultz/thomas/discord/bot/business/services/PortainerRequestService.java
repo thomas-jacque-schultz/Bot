@@ -1,6 +1,8 @@
 package schultz.thomas.discord.bot.business.services;
 
+import io.netty.util.internal.SuppressJava6Requirement;
 import lombok.RequiredArgsConstructor;
+import org.glassfish.jersey.internal.util.Pretty;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.metrics.startup.StartupTimeMetricsListener;
 import org.springframework.core.ParameterizedTypeReference;
@@ -11,6 +13,7 @@ import schultz.thomas.discord.bot.model.transitory.DockerContainerState;
 import schultz.thomas.discord.bot.business.parser.DiscordContainerStateParser;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service("portainerRequestService")
@@ -45,12 +48,22 @@ public class PortainerRequestService implements ContainerRequestService {
 
     @Override
     public DockerContainerState getContainerState(String containerName) {
-        LinkedHashMap<String, Object> answer = restClient.get()
+        Map<String, Object> response = restClient.get()
                 .uri("/containers/{name}/json", containerName)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .body(new ParameterizedTypeReference<LinkedHashMap<String, Object>>() {
-                });
-        return discordContainerStateParser.dockerContainerStateDto((LinkedHashMap<String, Object>) answer.get("State"));
+                .body(new ParameterizedTypeReference<Map<String, Object>>() {});
+
+        if (response == null || !response.containsKey("State")) {
+            throw new IllegalStateException("Invalid response: missing 'State' field in Docker API response");
+        }
+
+        Object stateObject = response.get("State");
+
+        @SuppressWarnings("unchecked")
+        LinkedHashMap<String, Object> stateMap = stateObject instanceof LinkedHashMap ? (LinkedHashMap<String, Object>) stateObject : null;
+
+        return discordContainerStateParser.dockerContainerStateDto(stateMap);
     }
+
 }
