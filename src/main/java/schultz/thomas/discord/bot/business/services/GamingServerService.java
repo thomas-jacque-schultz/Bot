@@ -22,7 +22,6 @@ public class GamingServerService {
 
     private List<GamingServerEntity> serveurStateCache;
     private final GamingServerRepository gamingServerRepository;
-    private final DockerService dockerService;
     private final ServeurEntityMapper serveurEntityMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
 

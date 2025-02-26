@@ -49,7 +49,7 @@ public class PortainerRequestService implements ContainerRequestService {
                 .uri("/containers/{name}/json", containerName)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .body(new ParameterizedTypeReference<LinkedHashMap<String, Object>>() {
+                .body(new ParameterizedTypeReference<>() {
                 });
         return discordContainerStateParser.dockerContainerStateDto((LinkedHashMap<String, Object>) answer.get("State"));
     }

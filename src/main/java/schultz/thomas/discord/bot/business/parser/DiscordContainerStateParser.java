@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 public interface DiscordContainerStateParser {
 
     @Mapping(target = "running", source = "Running", qualifiedByName = "mapToBoolean")
-    public DockerContainerState dockerContainerStateDto(LinkedHashMap<String, Object> containerState);
+    DockerContainerState dockerContainerStateDto(LinkedHashMap<String, Object> containerState);
 
     @Named("mapToBoolean")
     default boolean mapToBoolean(Object value) {

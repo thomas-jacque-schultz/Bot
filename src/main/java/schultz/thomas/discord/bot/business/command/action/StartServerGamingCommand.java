@@ -2,14 +2,12 @@ package schultz.thomas.discord.bot.business.command.action;
 
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.business.command.Command;
 import schultz.thomas.discord.bot.business.command.CommandContext;
@@ -64,9 +62,7 @@ public class StartServerGamingCommand implements Command {
             throw new CommandFailedException("Impossible de lancer le serveur de jeu");
         }
 
-        scheduler.schedule(() -> {
-            applicationEventPublisher.publishEvent(new GamingServerEvent(this, gamingServerEntity, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED));
-        }, 10, java.util.concurrent.TimeUnit.SECONDS);
+        scheduler.schedule(() -> applicationEventPublisher.publishEvent(new GamingServerEvent(this, gamingServerEntity, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED)), 10, java.util.concurrent.TimeUnit.SECONDS);
 
         return "Serveur de jeu lancé";
     }

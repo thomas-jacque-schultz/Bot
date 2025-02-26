@@ -2,7 +2,6 @@ package schultz.thomas.discord.bot.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.mapstruct.Named;
 
 @Getter
 @RequiredArgsConstructor
