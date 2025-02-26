@@ -6,6 +6,9 @@ spring:
       uri: mongodb://${MONGODB_PATH:default-value}/test
 discord:
   token: ${DISCORD_TOKEN:default-value}
+  admin:
+    id: ${DISCORD_ADMIN_ID:default-value}
+    username: ${DISCORD_ADMIN_USERNAME:default-value}
 portainer:
   base-url: ${PORTAINER_VIRTUAL_HOST:default-value}
   token: ${PORTAINER_TOKEN:default-value}
