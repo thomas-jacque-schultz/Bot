@@ -24,8 +24,8 @@ public class UserRepositorySeeding {
     CommandLineRunner initDatabase(UserRepository userRepository) {
         return args -> {
             UserEntity admin = new UserEntity();
-            admin.setDiscordId("admin");
-            admin.setDiscordUsername("admin");
+            admin.setDiscordId(adminDiscordId);
+            admin.setDiscordUsername(adminDiscordUsername);
             admin.setPrivilege(UserPrivilegeEnum.OWNER);
             UserEntity existingUser = userRepository.findByDiscordId(admin.getDiscordId());
             if (Objects.isNull(existingUser)) {
