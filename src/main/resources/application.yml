@@ -1,14 +1,16 @@
 spring:
+  config:
+    import: "optional:configtree:/run/secrets/"
   application:
     name: mongodb
   data:
     mongodb:
-      uri: ${MONGODB_PATH:default-value}
+      uri: mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@${MONGO_HOST}:27017/${MONGO_DB}?authSource=admin
 discord:
-  token: ${DISCORD_TOKEN:default-value}
+  token: ${DISCORD_TOKEN}
   admin:
-    id: ${DISCORD_ADMIN_ID:default-value}
-    username: ${DISCORD_ADMIN_USERNAME:default-value}
+    id: ${DISCORD_ADMIN_ID}
+    username: ${DISCORD_ADMIN_USERNAME}
 portainer:
-  base-url: ${PORTAINER_VIRTUAL_HOST:default-value}
-  token: ${PORTAINER_TOKEN:default-value}
+  base-url: ${PORTAINER_VIRTUAL_HOST}
+  token: ${PORTAINER_TOKEN}
