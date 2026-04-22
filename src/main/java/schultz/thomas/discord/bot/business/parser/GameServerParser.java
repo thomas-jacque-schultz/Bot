@@ -15,6 +15,9 @@ public interface  GameServerParser {
 
     //ignored fields are not mapped
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "lastStatusCheckAt", ignore = true)
+    @Mapping(target = "lastStatusChangeAt", ignore = true)
+    @Mapping(target = "statusHistory", ignore = true)
     //discord command option with uppercase
     @Mapping(target = "playersMax", source = "players-max")
     @Mapping(target = "urlConnection", source = "url-connection")

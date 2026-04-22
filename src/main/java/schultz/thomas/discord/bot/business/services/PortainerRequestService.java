@@ -1,18 +1,14 @@
 package schultz.thomas.discord.bot.business.services;
 
-import io.netty.util.internal.SuppressJava6Requirement;
 import lombok.RequiredArgsConstructor;
-import org.glassfish.jersey.internal.util.Pretty;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.actuate.metrics.startup.StartupTimeMetricsListener;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 import schultz.thomas.discord.bot.model.transitory.DockerContainerState;
-import schultz.thomas.discord.bot.business.parser.DiscordContainerStateParser;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -22,48 +18,54 @@ public class PortainerRequestService implements ContainerRequestService {
     @Qualifier("portainerRestClient")
     private final RestClient restClient;
 
-    private final DiscordContainerStateParser discordContainerStateParser;
-
-    private final StartupTimeMetricsListener startupTimeMetrics;
+    private final PortainerErrorLogger portainerErrorLogger;
 
     @Override
-    public boolean startContainer(String containerName) {
-        String response = restClient.post()
-                .uri("/containers/{name}/start", containerName)
-                .retrieve()
-                .body(String.class); // Modify based on actual response
-
-        return response == null;
-    }
-
-    @Override
-    public boolean stopContainer(String containerName) {
-        String response = restClient.post()
-                .uri("/containers/{name}/stop", containerName)
-                .retrieve()
-                .body(String.class);
-
-        return response == null;
-    }
-
-    @Override
-    public DockerContainerState getContainerState(String containerName) {
-        Map<String, Object> response = restClient.get()
-                .uri("/containers/{name}/json", containerName)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .body(new ParameterizedTypeReference<Map<String, Object>>() {});
-
-        if (response == null || !response.containsKey("State")) {
-            throw new IllegalStateException("Invalid response: missing 'State' field in Docker API response");
+    public boolean startContainer(Integer stackId) {
+        try {
+            restClient.post()
+                    .uri("/api/stacks/{id}/start", stackId)
+                    .retrieve()
+                    .body(String.class);
+            return true;
+        } catch (RestClientException e) {
+            portainerErrorLogger.logRestClientException("start-stack", String.valueOf(stackId), e);
+            throw e;
         }
+    }
 
-        Object stateObject = response.get("State");
+    @Override
+    public boolean stopContainer(Integer stackId) {
+        try {
+            restClient.post()
+                    .uri("/api/stacks/{id}/stop", stackId)
+                    .retrieve()
+                    .body(String.class);
+            return true;
+        } catch (RestClientException e) {
+            portainerErrorLogger.logRestClientException("stop-stack", String.valueOf(stackId), e);
+            throw e;
+        }
+    }
 
-        @SuppressWarnings("unchecked")
-        LinkedHashMap<String, Object> stateMap = stateObject instanceof LinkedHashMap ? (LinkedHashMap<String, Object>) stateObject : null;
+    @Override
+    public DockerContainerState getContainerState(Integer stackId) {
+        try {
+            Map<String, Object> stack = restClient.get()
+                    .uri("/api/stacks/{id}", stackId)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<Map<String, Object>>() {});
 
-        return discordContainerStateParser.dockerContainerStateDto(stateMap);
+            DockerContainerState state = new DockerContainerState();
+            if (stack != null) {
+                state.setRunning(Integer.valueOf(1).equals(stack.get("Status")));
+            }
+            return state;
+        } catch (RestClientException e) {
+            portainerErrorLogger.logRestClientException("state", String.valueOf(stackId), e);
+            throw e;
+        }
     }
 
 }

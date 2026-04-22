@@ -7,6 +7,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.business.services.DiscordMessageService;
 import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
+import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
+import schultz.thomas.discord.bot.model.repository.GamingServerRepository;
 
 @Component
 @RequiredArgsConstructor
@@ -16,18 +18,27 @@ public class GamingServersEventListener {
 
     private final DiscordMessageService discordMessageService;
 
+    private final GamingServerRepository gamingServerRepository;
+
     @Async
     @EventListener
     public void handleGamingServerEvent(GamingServerEvent event) {
+        GamingServerEntity gamingServerEntity = event.getGamingServerEntity();
+        if (gamingServerEntity == null) {
+            return;
+        }
+
         switch (event.getGamingServerEventType()) {
             case GamingServerEvent.GamingServerEventType.SERVER_CREATED:
-                discordMessageService.createOrUpdateMessageForGamingServerEntity(event.getGamingServerEntity(), jda);
+                gamingServerRepository.save(gamingServerEntity);
+                discordMessageService.createOrUpdateMessageForGamingServerEntity(gamingServerEntity, jda);
                 break;
             case GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED:
-                discordMessageService.createOrUpdateMessageForGamingServerEntity(event.getGamingServerEntity(), jda);
+                gamingServerRepository.save(gamingServerEntity);
+                discordMessageService.createOrUpdateMessageForGamingServerEntity(gamingServerEntity, jda);
                 break;
             case GamingServerEvent.GamingServerEventType.SERVER_DELETED:
-                discordMessageService.deleteMessageForGamingServerEntity(event.getGamingServerEntity(), jda);
+                discordMessageService.deleteMessageForGamingServerEntity(gamingServerEntity, jda);
                 break;
             default:
                 break;

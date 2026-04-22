@@ -1,17 +1,14 @@
 package schultz.thomas.discord.bot.controllers.controller;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
-import net.dv8tion.jda.api.JDA;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import schultz.thomas.discord.bot.business.command.Command;
-import schultz.thomas.discord.bot.business.command.CommandContext;
-import schultz.thomas.discord.bot.business.command.CommandExecutorService;
-import schultz.thomas.discord.bot.business.command.CommandSelector;
-import schultz.thomas.discord.bot.model.enums.CommandEnum;
+import schultz.thomas.discord.bot.business.mapper.ServeurEntityMapper;
+import schultz.thomas.discord.bot.business.services.GamingServerService;
+import schultz.thomas.discord.bot.controllers.dto.GamingServerDto;
+import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 
 @RestController
@@ -19,26 +16,48 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GamingServerController {
 
-    private final CommandExecutorService commandExecutorService;
+    private final GamingServerService gamingServerService;
+    private final ServeurEntityMapper serveurEntityMapper;
 
-    private final CommandSelector commandSelector;
-
-    private final JDA jda;
-
-
-    @PostMapping("/command/{commandName}")
-    public String getCommand(@PathVariable String commandName, @RequestBody String serveurIdentifiant) {
-
-        Map<String, String> options = new HashMap<>();
-        options.put("gaming-serveur-identifiant", serveurIdentifiant);
-        CommandContext context = new CommandContext(jda, CommandEnum.REFRESH_GAMING_SERVER_MESSAGE.getCommandName(), null);
-        Command command = commandSelector.getCommand(commandName);
-
-        command.execute(context);
-
-        return HttpResponseStatus.OK.toString();
+    @GetMapping
+    public List<GamingServerDto> getAllServers() {
+        return gamingServerService.getAllGameServerEntities().stream()
+                .map(serveurEntityMapper::toDto)
+                .toList();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<GamingServerDto> getServerById(@PathVariable String id) {
+        GamingServerEntity server = gamingServerService.getGameServerEntityByIdentifier(id);
+        if (server == null) {
+            server = gamingServerService.getAllGameServerEntities().stream()
+                    .filter(s -> id.equals(s.getId()))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return server != null
+                ? ResponseEntity.ok(serveurEntityMapper.toDto(server))
+                : ResponseEntity.notFound().build();
+    }
 
+    @PostMapping
+    public ResponseEntity<GamingServerDto> createServer(@RequestBody GamingServerDto dto) {
+        GamingServerEntity entity = serveurEntityMapper.toEntity(dto);
+        gamingServerService.createGamingServer(entity);
+        return ResponseEntity.status(201).body(serveurEntityMapper.toDto(entity));
+    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<GamingServerDto> updateServer(
+            @PathVariable String id,
+            @RequestBody GamingServerDto dto
+    ) {
+        GamingServerEntity entity = serveurEntityMapper.toEntity(dto);
+        entity.setId(id);
+        entity.setIdentifier(dto.identifier() != null ? dto.identifier() : id);
+        gamingServerService.updateGamingServer(entity);
+        return ResponseEntity.ok(serveurEntityMapper.toDto(entity));
+    }
 }
+
+

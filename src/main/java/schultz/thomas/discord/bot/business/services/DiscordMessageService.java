@@ -12,6 +12,7 @@ import schultz.thomas.discord.bot.model.entity.ChannelEntity;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 import schultz.thomas.discord.bot.model.entity.MessageEntity;
 import schultz.thomas.discord.bot.model.repository.ChannelRepository;
+import schultz.thomas.discord.bot.model.enums.ServerStatusEnum;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -132,7 +133,7 @@ public class DiscordMessageService {
         else {
             embedBuilder.setTitle(gamingServerEntity.getGameName().getGameName() + " - " + gamingServerEntity.getName());
         }
-        embedBuilder.setColor(gamingServerEntity.getStatus().isRunning() ? Color.GREEN : Color.RED);
+        embedBuilder.setColor(gamingServerEntity.getStatus() == ServerStatusEnum.ONLINE ? Color.GREEN : Color.RED);
 
         // Ajouter les champs principaux
         embedBuilder.addField("URL : ```" + gamingServerEntity.getUrlConnection()+ "```","", false);
@@ -159,7 +160,7 @@ public class DiscordMessageService {
         }
 
         // Ajouter un pied de page avec l'ID du serveur
-        embedBuilder.setFooter("Statut : " +  (gamingServerEntity.getStatus().isRunning() ? "\uD83D\uDFE2":"\uD83D\uDD34"), null);
+        embedBuilder.setFooter("Statut : " +  (gamingServerEntity.getStatus() == ServerStatusEnum.ONLINE ? "\uD83D\uDFE2":"\uD83D\uDD34"), null);
 
         embedBuilder.setThumbnail(gamingServerEntity.getGameName().getIconUrl());
 

@@ -11,6 +11,8 @@ import java.util.Map;
 public interface UserParser   {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "authUsername", ignore = true)
+    @Mapping(target = "passwordHash", ignore = true)
     @Mapping(target = "discordId", source = "discord-id")
     @Mapping(target = "discordUsername", source = "discord-username")
     UserEntity toUserEntity(Map<String, String> arguments);

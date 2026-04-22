@@ -14,6 +14,8 @@ public class UserEntity {
     private String id;
     private String discordId;
     private String discordUsername;
+    private String authUsername;
+    private String passwordHash;
     private UserPrivilegeEnum privilege;
 
 }
