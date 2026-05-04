@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: mongodb
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_PATH:default-value}/test
+discord:
+  token: ${DISCORD_TOKEN:default-value}
+portainer:
+  base-url: ${PORTAINER_VIRTUAL_HOST:default-value}
+  token: ${PORTAINER_TOKEN:default-value}

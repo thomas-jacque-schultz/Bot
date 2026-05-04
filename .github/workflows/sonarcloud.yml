@@ -1,0 +1,28 @@
+name: SonarCloud analysis
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+  workflow_dispatch:
+
+permissions:
+  pull-requests: read # allows SonarCloud to decorate PRs with analysis results
+
+jobs:
+  Analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java with Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: '21'  # Assurez-vous que la version de Java correspond à celle de votre projet
+          distribution: 'temurin'
+
+      - name: Build with Maven and analyze with SonarCloud
+        run: mvn clean verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=thomas-jacque-schultz_Bot -Dsonar.organization=thomas-jacque-schultz -Dsonar.login=${{ secrets.SONAR_TOKEN }}
