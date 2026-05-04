@@ -20,7 +20,14 @@ public class ReadyListeners extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         log.info("The Bot has started");
 
-        getCommandMap.forEach(c -> event.getJDA().getGuilds().forEach(g ->  g.upsertCommand(c).queue()));
+        event.getJDA().getGuilds().forEach(guild ->
+            guild.updateCommands()
+                .addCommands(getCommandMap)
+                .queue(
+                    success -> log.info("Commands synced for guild {}", guild.getName()),
+                    error -> log.error("Failed to sync commands for guild {}", guild.getName(), error)
+                )
+        );
 
         log.info("The Bot has finished creating discord commands");
     }

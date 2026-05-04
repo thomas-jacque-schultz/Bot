@@ -3,9 +3,14 @@ package schultz.thomas.discord.bot.controllers.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import schultz.thomas.discord.bot.business.mapper.DiscordChannelMapper;
 import schultz.thomas.discord.bot.business.mapper.ServeurEntityMapper;
+import schultz.thomas.discord.bot.business.services.DiscordMessageService;
 import schultz.thomas.discord.bot.business.services.GamingServerService;
+import schultz.thomas.discord.bot.controllers.dto.DiscordChannelSubscriptionRequest;
 import schultz.thomas.discord.bot.controllers.dto.GamingServerDto;
+import schultz.thomas.discord.bot.controllers.dto.PublicServerStatusDto;
+import schultz.thomas.discord.bot.model.entity.ChannelEntity;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 
 import java.util.List;
@@ -18,11 +23,24 @@ public class GamingServerController {
 
     private final GamingServerService gamingServerService;
     private final ServeurEntityMapper serveurEntityMapper;
+    private final DiscordMessageService discordMessageService;
+    private final DiscordChannelMapper discordChannelMapper;
 
     @GetMapping
     public List<GamingServerDto> getAllServers() {
         return gamingServerService.getAllGameServerEntities().stream()
                 .map(serveurEntityMapper::toDto)
+                .toList();
+    }
+
+    @GetMapping("/public-status")
+    public List<PublicServerStatusDto> getPublicServersStatus() {
+        return gamingServerService.getAllGameServerEntities().stream()
+                .map(server -> new PublicServerStatusDto(
+                        server.getName(),
+                        server.getStatus() != null ? server.getStatus().name() : null,
+                        server.getLastStatusCheckAt()
+                ))
                 .toList();
     }
 
@@ -57,6 +75,20 @@ public class GamingServerController {
         entity.setIdentifier(dto.identifier() != null ? dto.identifier() : id);
         gamingServerService.updateGamingServer(entity);
         return ResponseEntity.ok(serveurEntityMapper.toDto(entity));
+    }
+
+    @PostMapping("/subscribe-channels")
+    public ResponseEntity<?> subscribeChannels(@RequestBody DiscordChannelSubscriptionRequest request) {
+        if (request == null || request.channels() == null || request.channels().isEmpty()) {
+            return ResponseEntity.badRequest().body("No channel provided");
+        }
+
+        List<ChannelEntity> channels = request.channels().stream()
+            .map(discordChannelMapper::toChannelEntity)
+                .toList();
+
+        discordMessageService.subscribeAndRefresh(channels);
+        return ResponseEntity.ok().build();
     }
 }
 

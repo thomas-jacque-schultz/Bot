@@ -4,16 +4,13 @@ package schultz.thomas.discord.bot.business.command.action;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.internal.interactions.CommandDataImpl;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import schultz.thomas.discord.bot.business.command.Command;
 import schultz.thomas.discord.bot.business.command.CommandContext;
+import schultz.thomas.discord.bot.business.mapper.DiscordChannelMapper;
 import schultz.thomas.discord.bot.business.exceptions.CommandFailedException;
 import schultz.thomas.discord.bot.business.services.DiscordMessageService;
-import schultz.thomas.discord.bot.business.services.GamingServerService;
-import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
-import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 import schultz.thomas.discord.bot.model.enums.CommandEnum;
 import schultz.thomas.discord.bot.model.enums.UserPrivilegeEnum;
 
@@ -25,10 +22,7 @@ import java.util.List;
 public class SubscribeChannelCommand implements Command {
 
     private final DiscordMessageService discordMessageService;
-
-    private final GamingServerService gamingServerService;
-
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final DiscordChannelMapper discordChannelMapper;
 
 
     public List<UserPrivilegeEnum> roleNeeded(){
@@ -47,17 +41,15 @@ public class SubscribeChannelCommand implements Command {
 
     @Override
     public String execute(CommandContext context) {
-        ChannelEntity channel = new ChannelEntity();
-        channel.setChannelId(context.getOptions().get("channel-id"));
-        channel.setName(context.getOptions().get("channel-name"));
-        channel.setGuildId(context.getOptions().get("guild-id"));
-        channel.setMessages(new ArrayList<>());
+        ChannelEntity channel = discordChannelMapper.toChannelEntity(
+                context.getOptions().get("channel-id"),
+                context.getOptions().get("channel-name"),
+                context.getOptions().get("guild-id")
+        );
 
         try {
-            discordMessageService.subscribeDiscordChannel(channel);
-            List<GamingServerEntity> serverNames = gamingServerService.getAllGameServerEntities();
-            serverNames.forEach(server -> applicationEventPublisher.publishEvent(new GamingServerEvent(this, server, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED)));
-        } catch (IllegalArgumentException e) {
+            discordMessageService.subscribeAndRefresh(channel);
+        } catch (RuntimeException e) {
             throw new CommandFailedException("Impossible de créer le channel : " + e.getMessage());
         }
         return "J'utilise maintenant ce channel pour les updates";

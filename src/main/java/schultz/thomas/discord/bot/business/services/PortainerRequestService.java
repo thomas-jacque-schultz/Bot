@@ -24,7 +24,7 @@ public class PortainerRequestService implements ContainerRequestService {
     public boolean startContainer(Integer stackId) {
         try {
             restClient.post()
-                    .uri("/api/stacks/{id}/start", stackId)
+                    .uri("/api/stacks/{id}/start?endpointId=2", stackId)
                     .retrieve()
                     .body(String.class);
             return true;
@@ -38,7 +38,7 @@ public class PortainerRequestService implements ContainerRequestService {
     public boolean stopContainer(Integer stackId) {
         try {
             restClient.post()
-                    .uri("/api/stacks/{id}/stop", stackId)
+                    .uri("/api/stacks/{id}/stop?endpointId=2", stackId)
                     .retrieve()
                     .body(String.class);
             return true;

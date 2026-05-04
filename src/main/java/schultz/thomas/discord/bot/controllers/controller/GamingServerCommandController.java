@@ -3,6 +3,7 @@ package schultz.thomas.discord.bot.controllers.controller;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import schultz.thomas.discord.bot.business.command.Command;
 import schultz.thomas.discord.bot.business.command.CommandContext;
 import schultz.thomas.discord.bot.business.command.CommandSelector;
-import schultz.thomas.discord.bot.model.enums.CommandEnum;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,19 +25,27 @@ public class GamingServerCommandController {
     private final JDA jda;
 
     @PostMapping("/{commandName}")
-    public String executeCommand(@PathVariable String commandName, @RequestBody String serveurIdentifiant) {
+    public ResponseEntity<?> executeCommand(@PathVariable String commandName, @RequestBody String serverIdentifier) {
         Map<String, String> options = new HashMap<>();
-        options.put("gaming-serveur-identifiant", serveurIdentifiant);
+        options.put("identifier", serverIdentifier);
+        options.put("gaming-serveur-identifiant", serverIdentifier);
 
         CommandContext context = new CommandContext(
                 jda,
-                CommandEnum.REFRESH_GAMING_SERVER_MESSAGE.getCommandName(),
-                null
+                commandName,
+                options
         );
 
         Command command = commandSelector.getCommand(commandName);
-        command.execute(context);
+        if (command == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Unknown command"));
+        }
 
-        return HttpResponseStatus.OK.toString();
+        String message = command.execute(context);
+
+        return ResponseEntity.ok(Map.of(
+                "status", HttpResponseStatus.OK.toString(),
+                "message", message
+        ));
     }
 }

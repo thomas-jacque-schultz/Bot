@@ -7,7 +7,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import schultz.thomas.discord.bot.controllers.events.models.GamingServerEvent;
 import schultz.thomas.discord.bot.model.entity.ChannelEntity;
 import schultz.thomas.discord.bot.model.entity.GamingServerEntity;
 import schultz.thomas.discord.bot.model.entity.MessageEntity;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
 public class DiscordMessageService {
 
     private final ChannelRepository channelRepository;
+    private final GamingServerService gamingServerService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     private List<ChannelEntity> subscribedChannelsCache;
 
@@ -36,11 +40,33 @@ public class DiscordMessageService {
         subscribedChannelsCache = channelRepository.findAll();
     }
 
+    public List<ChannelEntity> getSubscribedChannels() {
+        return List.copyOf(subscribedChannelsCache);
+    }
+
+    @SuppressWarnings("null")
     public boolean subscribeDiscordChannel(ChannelEntity channelEntity) {
         if (subscribedChannelsCache.stream().anyMatch(channel -> channel.getChannelId().equals(channelEntity.getChannelId()))) {
             throw new EntityExistsException("Channel already exists");
         }
-        return subscribedChannelsCache.add(channelRepository.save(channelEntity));
+        var savedChannel = channelRepository.save(channelEntity);
+        return subscribedChannelsCache.add(savedChannel);
+    }
+
+    public void subscribeAndRefresh(ChannelEntity channelEntity) {
+        try {
+            subscribeDiscordChannel(channelEntity);
+        } catch (EntityExistsException ignored) {
+            // Idempotent for API and UI retries.
+        }
+
+        publishStatusRefreshForAllServers();
+    }
+
+    public void subscribeAndRefresh(List<ChannelEntity> channelEntities) {
+        for (ChannelEntity channelEntity : channelEntities) {
+            subscribeAndRefresh(channelEntity);
+        }
     }
 
     public boolean unsubscribeDiscordChannel(ChannelEntity channelEntity) {
@@ -63,6 +89,7 @@ public class DiscordMessageService {
         TextChannel textChannel = jda.getTextChannelById(channel.getChannelId());
         if (textChannel == null) {
             log.error("TextChannel with ID {} not found", channel.getChannelId());
+            return;
         }
         textChannel.sendMessageEmbeds(createEmbedFromServer(gamingServerEntity)).queue(
                 message -> {
@@ -85,6 +112,7 @@ public class DiscordMessageService {
         TextChannel textChannel = jda.getTextChannelById(channel.getChannelId());
         if (textChannel == null) {
             log.error("TextChannel with ID {} not found", channel.getChannelId());
+            return;
         }
         textChannel.editMessageEmbedsById(message.getMessageId(), createEmbedFromServer(gamingServerEntity)).queue(
                 success -> log.info("Message updated for GamingServerEntity ID {}", gamingServerEntity.getId()),
@@ -169,5 +197,12 @@ public class DiscordMessageService {
     }
 
     public void deleteMessageForGamingServerEntity(GamingServerEntity gamingServerEntity, JDA jda) {
+    }
+
+    private void publishStatusRefreshForAllServers() {
+        List<GamingServerEntity> serverEntities = gamingServerService.getAllGameServerEntities();
+        serverEntities.forEach(server -> applicationEventPublisher.publishEvent(
+                new GamingServerEvent(this, server, GamingServerEvent.GamingServerEventType.SERVER_STATUS_CHANGED)
+        ));
     }
 }
